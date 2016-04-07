@@ -141,8 +141,9 @@ public class HttpRequest extends RequestType {
 
     public HttpRequest addParameter(final String paramName, final Object paramValue) {
         try{
-            parameters.add(new NameValue(paramName, paramValue == null ? "" : String.valueOf(paramValue)));
-        }catch (Exception ignored){}
+            parameters.add(new NameValue(paramName, String.valueOf(paramValue)));
+        }catch (Exception ignored){
+        }
         return this;
     }
 

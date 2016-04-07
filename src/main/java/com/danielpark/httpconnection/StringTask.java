@@ -18,9 +18,11 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Copyright (c) 2014-2015 daniel@bapul.net
@@ -142,15 +144,19 @@ public class StringTask extends HttpConnectionTask {
                 requestBuilder.get();
                 break;
             case POST:
-                FormBody.Builder formBody = new FormBody.Builder();
-                for(NameValue nv : httpRequest.getParameters()) {
-                    formBody.add(nv.getName(), nv.getValue());
-                }
-                RequestBody requestBody = formBody.build();
+//                FormBody.Builder formBody = new FormBody.Builder();
+//                for(NameValue nv : httpRequest.getParameters()) {
+//                    formBody.add(nv.getName(), nv.getValue());
+//                }
+//                RequestBody requestBody = formBody.build();
                 // set URL
                 requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(requestBody);
+                // set POST body
+                requestBuilder.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"), httpRequest.getParameters().toString()));
+                break;
+            case PUT:
+                break;
+            case DELETE:
                 break;
             default:
                 break;
@@ -161,7 +167,10 @@ public class StringTask extends HttpConnectionTask {
         Call call = client.newCall(request);
 //        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
         try {
-            call.execute();
+            Response response = call.execute();
+
+            if(callback != null)
+                callback.onResponse(call, response);
         } catch (IOException e) {
             LOG.e(e.getMessage());
         }
@@ -189,15 +198,16 @@ public class StringTask extends HttpConnectionTask {
                 requestBuilder.get();
                 break;
             case POST:
-                FormBody.Builder formBody = new FormBody.Builder();
-                for(NameValue nv : httpRequest.getParameters()) {
-                    formBody.add(nv.getName(), nv.getValue());
-                }
-                RequestBody requestBody = formBody.build();
-                // set URL
+//                FormBody.Builder formBody = new FormBody.Builder();
+//                for(NameValue nv : httpRequest.getParameters()) {
+//                    formBody.add(nv.getName(), nv.getValue());
+//                }
+//                RequestBody requestBody = formBody.build();
+//                // set URL
                 requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(requestBody);
+//                // set POST method
+//                requestBuilder.post(requestBody);
+                requestBuilder.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"), httpRequest.getParameters().toString()));
                 break;
             default:
                 break;

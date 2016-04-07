@@ -3,9 +3,12 @@ package com.danielpark.httpconnection;
 import android.content.Context;
 import android.os.Looper;
 
+import com.danielpark.httpconnection.handler.JsonHttpResponseHandler;
 import com.danielpark.httpconnection.request.HttpRequest;
 import com.danielpark.httpconnection.type.RequestType;
 import com.danielpark.httpconnection.util.Logger;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,7 +36,7 @@ public class SyncHttpConnection {
         return sThis;
     }
 
-    private final OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
 
     HttpConnectionTask currentTask;
 
@@ -45,7 +48,7 @@ public class SyncHttpConnection {
      * @param request
      * @throws Exception
      */
-    public void start(HttpRequest request, Callback callback, Interceptor interceptor){
+    public void start(HttpRequest request, JsonHttpResponseHandler mListener, Interceptor interceptor){
 
         // Make sure that everything is perfect!
         synchronized (this) {
@@ -55,15 +58,29 @@ public class SyncHttpConnection {
             }
 
             // No need to check thread, because okhttp call method already run in another Thread!!
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                LOG.e("Do not execute this on main thread!!");
-                return;
+//            if (Looper.myLooper() == Looper.getMainLooper()) {
+//                LOG.e("Do not execute this on main thread!!");
+//                return;
+//            }
+
+            // 기본 read timeout 20초로 설정
+            if(client == null){
+                client = new OkHttpClient.Builder()
+                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
+                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+                        .retryOnConnectionFailure(false)
+                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+                        .build();
+            }
+
+            if(mListener != null){
+                mListener.setUseSynchronousMode(true);
             }
 
             if (request.getRequestType() == RequestType.Type.MULTI_PART) {
-                currentTask = new MultipartTask(client, request, callback, interceptor);
+                currentTask = new MultipartTask(client, request, mListener, interceptor);
             } else if (request.getRequestType() == RequestType.Type.TEXT) {
-                currentTask = new StringTask(client, request, callback, interceptor);
+                currentTask = new StringTask(client, request, mListener, interceptor);
             }
         }
         currentTask.run(HttpConnectionTask.SyncType.Sync);

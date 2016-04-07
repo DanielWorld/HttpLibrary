@@ -102,3 +102,11 @@ proguard_logs/
 com_crashlytics_export_strings.xml
 .idea/modules.xml
 .idea/gradle.xml
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/encodings.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties

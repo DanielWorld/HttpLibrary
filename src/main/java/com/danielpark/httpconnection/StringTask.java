@@ -1,21 +1,15 @@
 package com.danielpark.httpconnection;
 
-import android.util.Log;
-
-import com.danielpark.httpconnection.model.MultipartFile;
 import com.danielpark.httpconnection.model.NameValue;
 import com.danielpark.httpconnection.request.HttpRequest;
 import com.danielpark.httpconnection.util.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -67,9 +61,10 @@ public class StringTask extends HttpConnectionTask {
 
     /**
      * Create URL with query parameters <br> Support only GET method
+     *
      * @return URL with query parameters for GET method
      */
-    private URL createGetURL(){
+    private URL createGetURL() {
         /*
          * Example of create perfect URL
         HttpUrl url = new HttpUrl.Builder()
@@ -86,7 +81,7 @@ public class StringTask extends HttpConnectionTask {
         HttpUrl detailURL = HttpUrl.parse(httpRequest.getURL());
         HttpUrl.Builder builder = detailURL.newBuilder();
 
-        for(NameValue n : parameters){
+        for (NameValue n : parameters) {
             builder.setQueryParameter(n.getName(), n.getValue());
         }
 
@@ -96,9 +91,10 @@ public class StringTask extends HttpConnectionTask {
 
     /**
      * Create POST URL
+     *
      * @return
      */
-    private URL createPostURL(){
+    private URL createPostURL() {
           /*
          * Example of create perfect URL
         HttpUrl url = new HttpUrl.Builder()
@@ -123,20 +119,20 @@ public class StringTask extends HttpConnectionTask {
         return detailURL.url();
     }
 
-    // Daniel (2016-04-07 12:03:34): Sync 형태로 연결
-    private void connectionSync(){
+    // Daniel (2016-04-07 12:04:10): Async 형태로 연결
+    private void connectionAsync() {
         Request.Builder requestBuilder = new Request.Builder();
 
         // Parsing Headers
         ArrayList<NameValue> headers = httpRequest.getHeaders();
 
-        for(NameValue n : headers){
+        for (NameValue n : headers) {
             requestBuilder.header(n.getName(), n.getValue());
             // if you want to add multiple values with same name then
             // use "requestBuilder.addheader(name, value);"
         }
 
-        switch (httpRequest.getMethod()){
+        switch (httpRequest.getMethod()) {
             case GET:
                 // set URL
                 requestBuilder.url(createGetURL());
@@ -144,19 +140,76 @@ public class StringTask extends HttpConnectionTask {
                 requestBuilder.get();
                 break;
             case POST:
-//                FormBody.Builder formBody = new FormBody.Builder();
-//                for(NameValue nv : httpRequest.getParameters()) {
-//                    formBody.add(nv.getName(), nv.getValue());
-//                }
-//                RequestBody requestBody = formBody.build();
                 // set URL
                 requestBuilder.url(createPostURL());
-                // set POST body
-                requestBuilder.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"), httpRequest.getParameters().toString()));
+                // set POST method
+                requestBuilder.post(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
                 break;
             case PUT:
+                // set URL
+                requestBuilder.url(createPostURL());
+                // set POST method
+                requestBuilder.put(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
                 break;
             case DELETE:
+                // set URL
+                requestBuilder.url(createPostURL());
+                // set DELETE method
+                if (httpRequest.getBody() == null || httpRequest.getBody().isEmpty())
+                    requestBuilder.delete();
+                else
+                    requestBuilder.delete(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
+                break;
+            default:
+                break;
+        }
+
+        final Request request = requestBuilder.build();
+
+        Call call = client.newCall(request);
+        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
+    }
+
+    // Daniel (2016-04-07 12:03:34): Sync 형태로 연결
+    private void connectionSync() {
+        Request.Builder requestBuilder = new Request.Builder();
+
+        // Parsing Headers
+        ArrayList<NameValue> headers = httpRequest.getHeaders();
+
+        for (NameValue n : headers) {
+            requestBuilder.header(n.getName(), n.getValue());
+            // if you want to add multiple values with same name then
+            // use "requestBuilder.addheader(name, value);"
+        }
+
+        switch (httpRequest.getMethod()) {
+            case GET:
+                // set URL
+                requestBuilder.url(createGetURL());
+                // set GET method
+                requestBuilder.get();
+                break;
+            case POST:
+                // set URL
+                requestBuilder.url(createPostURL());
+                // set POST method
+                requestBuilder.post(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
+                break;
+            case PUT:
+                // set URL
+                requestBuilder.url(createPostURL());
+                // set POST method
+                requestBuilder.put(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
+                break;
+            case DELETE:
+                // set URL
+                requestBuilder.url(createPostURL());
+                // set DELETE method
+                if (httpRequest.getBody() == null || httpRequest.getBody().isEmpty())
+                    requestBuilder.delete();
+                else
+                    requestBuilder.delete(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
                 break;
             default:
                 break;
@@ -169,54 +222,11 @@ public class StringTask extends HttpConnectionTask {
         try {
             Response response = call.execute();
 
-            if(callback != null)
+            if (callback != null)
                 callback.onResponse(call, response);
         } catch (IOException e) {
             LOG.e(e.getMessage());
         }
 
     }
-
-    // Daniel (2016-04-07 12:04:10): Async 형태로 연결
-    private void connectionAsync(){
-        Request.Builder requestBuilder = new Request.Builder();
-
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
-
-        for(NameValue n : headers){
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()){
-            case GET:
-                // set URL
-                requestBuilder.url(createGetURL());
-                // set GET method
-                requestBuilder.get();
-                break;
-            case POST:
-//                FormBody.Builder formBody = new FormBody.Builder();
-//                for(NameValue nv : httpRequest.getParameters()) {
-//                    formBody.add(nv.getName(), nv.getValue());
-//                }
-//                RequestBody requestBody = formBody.build();
-//                // set URL
-                requestBuilder.url(createPostURL());
-//                // set POST method
-//                requestBuilder.post(requestBody);
-                requestBuilder.post(RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"), httpRequest.getParameters().toString()));
-                break;
-            default:
-                break;
-        }
-
-        final Request request = requestBuilder.build();
-
-        Call call = client.newCall(request);
-        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
-    }
-
 }

@@ -58,10 +58,10 @@ public class SyncHttpConnection {
             }
 
             // No need to check thread, because okhttp call method already run in another Thread!!
-//            if (Looper.myLooper() == Looper.getMainLooper()) {
-//                LOG.e("Do not execute this on main thread!!");
-//                return;
-//            }
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                LOG.e("Do not execute this on main thread!!");
+                return;
+            }
 
             // 기본 read timeout 20초로 설정
             if(client == null){

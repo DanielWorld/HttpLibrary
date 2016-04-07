@@ -25,6 +25,7 @@ public class ContentType {
     public static final String APPLICATION_PKCS10 = APPLICATION + "pkcs10";
     public static final String APPLICATION_PKIX_CRL = APPLICATION + "pkix-crl";
     public static final String APPLICATION_POSTSCRIPT = APPLICATION + "postscript";
+    public static final String APPLICATION_JSON = APPLICATION + "json";
     public static final String APPLICATION_RTF = APPLICATION + "rtf";
     public static final String APPLICATION_SETPAY = APPLICATION + "set-payment-initiation";
     public static final String APPLICATION_SETREG = APPLICATION + "set-registration-initiation";

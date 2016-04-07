@@ -4,12 +4,15 @@ import android.content.Context;
 
 import com.danielpark.httpconnection.model.MultipartFile;
 import com.danielpark.httpconnection.model.NameValue;
+import com.danielpark.httpconnection.type.ContentType;
 import com.danielpark.httpconnection.type.RequestType;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import okhttp3.MediaType;
 
 /**
  * Copyright (c) 2014-2015 op7773hons@gmail.com
@@ -19,18 +22,19 @@ public class HttpRequest extends RequestType {
 
     private Context context;
     private String URL;
-    private ArrayList<NameValue> headers;
-    private ArrayList<NameValue> parameters;
-    private ArrayList<MultipartFile> files;
-    private int maxRetries;
-    private long connectTimeout = 5000;
-    private long readTimeout = 7000;
+
+    private ArrayList<NameValue> headers;       // Daniel (2016-04-07 22:52:45): Header
+    private ArrayList<NameValue> parameters;    // Daniel (2016-04-07 22:52:54): URL 뒤 파라미터들
+    private String body;                        // Daniel (2016-04-07 22:53:07): 전송할 body
+    private String contentType;                 // Daniel (2016-04-07 22:53:24): 전송할 body 의 content-type
+
+    private ArrayList<MultipartFile> files;     // Daniel (2016-04-07 22:53:56): Multi-part request 에 사용되는 File
 
     public enum Method {
         POST, GET, PUT, DELETE
     }
 
-    private Method httpMethod = Method.POST;  // http type. default value is POST
+    private Method httpMethod = Method.GET;  // http type. default value is POST
 
     public HttpRequest(final Context ctx) {
         this.context = ctx;
@@ -127,18 +131,12 @@ public class HttpRequest extends RequestType {
     }
 
     /**
-     * Adds a parameter to this request <br>
-     * Not file or other things.. but only string text
+     * Adds a parameter to this request (Not body but parameters)
      *
      * @param paramName  parameter name
      * @param paramValue parameter value
      * @return {@link HttpRequest}
      */
-    public HttpRequest addParameter(final String paramName, final String paramValue) {
-        parameters.add(new NameValue(paramName, paramValue));
-        return this;
-    }
-
     public HttpRequest addParameter(final String paramName, final Object paramValue) {
         try{
             parameters.add(new NameValue(paramName, String.valueOf(paramValue)));
@@ -155,26 +153,31 @@ public class HttpRequest extends RequestType {
     }
 
     /**
-     * Sets the maximum number of retries that the library will do if an error occurs,
-     * before returning an error
-     *
-     * @param maxRetries number of maximum retries on error
-     * @return {@link HttpRequest}
+     * Add body String to send
+     * @param body
      */
-    public HttpRequest setMaxRetries(int maxRetries) {
-        if (maxRetries < 1)
-            this.maxRetries = 0;
-        else
-            this.maxRetries = maxRetries;
-        return this;
+    public void addBody(String body){
+        this.body = body;
     }
 
     /**
-     * @return Get the maximum number of retries that the library will do if an error occurs,
-     * before returning error
+     * Get body
+     * @return
      */
-    public final int getMaxRetries() {
-        return maxRetries;
+    public String getBody(){
+        return body;
+    }
+
+    /**
+     * Set contentType;
+     * @param contentType
+     */
+    public void setContentType(String contentType){
+        this.contentType = contentType;
+    }
+
+    public String getContentType(){
+        return contentType;
     }
 
     /**
@@ -199,42 +202,6 @@ public class HttpRequest extends RequestType {
         if (files == null)
             files = new ArrayList<>();
         return files;
-    }
-
-    /**
-     * Set connection timeout (milliseconds)
-     * @param time
-     * @return
-     */
-    public HttpRequest setConnectionTimeout(long time){
-        connectTimeout = time;
-        return this;
-    }
-
-    /**
-     * Get connection timeout (milliseconds)
-     * @return
-     */
-    public long getConnectTimeout(){
-        return connectTimeout;
-    }
-
-    /**
-     * Set read timeout (milliseconds)
-     * @param time
-     * @return
-     */
-    public HttpRequest setReadTimeout(long time){
-        readTimeout = time;
-        return this;
-    }
-
-    /**
-     * Get read timeout (milliseconds)
-     * @return
-     */
-    public long getReadTimeout(){
-        return readTimeout;
     }
 
     @Override

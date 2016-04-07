@@ -3,6 +3,7 @@ package com.danielpark.httpconnection;
 import com.danielpark.httpconnection.model.MultipartFile;
 import com.danielpark.httpconnection.model.NameValue;
 import com.danielpark.httpconnection.request.HttpRequest;
+import com.danielpark.httpconnection.type.ContentType;
 import com.danielpark.httpconnection.util.Logger;
 
 import java.io.File;
@@ -111,7 +112,7 @@ class MultipartTask extends HttpConnectionTask {
                     Headers.of("Content-Disposition", "form-data; name=\"" + m.getParamName() + "\""
                                     + "; filename=\"" + m.getFileName() + "\""
                     ),
-                    RequestBody.create(MediaType.parse("application/octet-stream"), new File(m.getFilePath()))
+                    RequestBody.create(MediaType.parse(ContentType.APPLICATION_OCTET_STREAM), new File(m.getFilePath()))
             );
         }
 

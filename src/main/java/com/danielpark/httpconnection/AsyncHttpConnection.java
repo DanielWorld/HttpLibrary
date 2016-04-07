@@ -58,8 +58,8 @@ public class AsyncHttpConnection {
             // 기본 read timeout 20초로 설정
             if(client == null){
                 client = new OkHttpClient.Builder()
-//                        .connectTimeout(10000, TimeUnit.MILLISECONDS)
-//                        .writeTimeout(5000, TimeUnit.MILLISECONDS)
+                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
+                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
                         .retryOnConnectionFailure(false)
                         .readTimeout(20000, TimeUnit.MILLISECONDS)
                         .build();

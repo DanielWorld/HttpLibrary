@@ -77,19 +77,4 @@ public class AsyncHttpConnection {
         }
         currentTask.run(HttpConnectionTask.SyncType.Async);
     }
-
-    /**
-     * Restart HTTP connection using OkHttp Request
-     *
-     * @param request
-     * @param callback
-     */
-    public void reStart(Request request, Callback callback) throws Exception {
-        if (request == null)
-            throw new Exception("Request is null!!");
-
-        Call call = client.newCall(request);
-        call.enqueue(callback);
-
-    }
 }

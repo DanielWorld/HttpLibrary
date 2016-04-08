@@ -141,27 +141,24 @@ public class StringTask extends HttpConnectionTask {
                 // set GET method
                 requestBuilder.get();
                 break;
-            case POST:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
-                break;
-            case PUT:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.put(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
-                break;
-            case DELETE:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set DELETE method
-                if (httpRequest.getBody() == null || httpRequest.getBody().isEmpty())
-                    requestBuilder.delete();
-                else
-                    requestBuilder.delete(RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody()));
-                break;
+			case POST:
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set POST method
+				requestBuilder.post(createBody(httpRequest));
+				break;
+			case PUT:
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set POST method
+				requestBuilder.put(createBody(httpRequest));
+				break;
+			case DELETE:
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set DELETE method
+				requestBuilder.delete(createBody(httpRequest));
+				break;
             default:
                 break;
         }
@@ -237,23 +234,21 @@ public class StringTask extends HttpConnectionTask {
         if(request == null)
             return RequestBody.create(null, "");
 
-        if(request.getContentType().equals(ContentType.getApplicationJson())){
-            // application/json
+		// application/x-www-form-urlencoded
+		if(request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())){
+			FormBody.Builder builder = new FormBody.Builder();
+
+			for(NameValue nv : httpRequest.getParameters()){
+				builder.add(nv.getName(), nv.getValue());
+			}
+			return builder.build();
+		}
+        // application/json
+        else if(request.getContentType().equals(ContentType.getApplicationJson())){
             return RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody());
         }
-        else if(request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())){
-            // application/x-www-form-urlencoded
-            FormBody.Builder builder = new FormBody.Builder();
-
-            for(NameValue nv : httpRequest.getParameters()){
-                builder.add(nv.getName(), nv.getValue());
-            }
-            RequestBody requestBody = builder.build();
-
-            return requestBody;
-        }
+        // etc
         else{
-            // etc
             return RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody());
         }
     }

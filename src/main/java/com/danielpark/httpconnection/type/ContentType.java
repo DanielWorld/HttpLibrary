@@ -88,6 +88,7 @@ public class ContentType {
     private static final String APPLICATION_USTAR = APPLICATION + "x-ustar";
     private static final String APPLICATION_WAIS_SOURCE = APPLICATION + "x-wais-source";
     private static final String APPLICATION_X509_CA_CERT = APPLICATION + "x-x509-ca-cert";
+    private static final String APPLICATION_X_WWW_FORM_URLENCODED = APPLICATION + "x-www-form-urlencoded";
     private static final String APPLICATION_PKO = APPLICATION + "ynd.ms-pkipko";
     private static final String APPLICATION_ZIP = APPLICATION + "zip";
     private static final String APPLICATION_XML = APPLICATION + "xml";
@@ -149,10 +150,6 @@ public class ContentType {
     private static final String VIDEO_MS_ASF = VIDEO + "x-ms-asf";
     private static final String VIDEO_AVI = VIDEO + "avi";
     private static final String VIDEO_MOVIE = VIDEO + "x-sgi-movie";
-
-    public static String getAPPLICATION() {
-        return APPLICATION;
-    }
 
     public static String getApplicationEnvoy() {
         return APPLICATION_ENVOY;
@@ -478,10 +475,6 @@ public class ContentType {
         return APPLICATION_XML;
     }
 
-    public static String getAUDIO() {
-        return AUDIO;
-    }
-
     public static String getAudioBasic() {
         return AUDIO_BASIC;
     }
@@ -508,10 +501,6 @@ public class ContentType {
 
     public static String getAudioWav() {
         return AUDIO_WAV;
-    }
-
-    public static String getIMAGE() {
-        return IMAGE;
     }
 
     public static String getImageBmp() {
@@ -590,10 +579,6 @@ public class ContentType {
         return IMAGE_XWINDOWDUMP;
     }
 
-    public static String getTEXT() {
-        return TEXT;
-    }
-
     public static String getTextCss() {
         return TEXT_CSS;
     }
@@ -650,10 +635,6 @@ public class ContentType {
         return TEXT_XML;
     }
 
-    public static String getVIDEO() {
-        return VIDEO;
-    }
-
     public static String getVideoMpeg() {
         return VIDEO_MPEG;
     }
@@ -676,5 +657,9 @@ public class ContentType {
 
     public static String getVideoMovie() {
         return VIDEO_MOVIE;
+    }
+
+    public static String getApplicationXWwwFormUrlencoded() {
+        return APPLICATION_X_WWW_FORM_URLENCODED;
     }
 }

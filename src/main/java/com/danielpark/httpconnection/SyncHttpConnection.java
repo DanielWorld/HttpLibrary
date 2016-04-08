@@ -84,4 +84,48 @@ public class SyncHttpConnection {
         }
         currentTask.run(HttpConnectionTask.SyncType.Sync);
     }
+
+    /**
+     * Start Sync HTTP connection with {@link AsyncHttpResponseHandler}
+     *
+     * @param request
+     * @throws Exception
+     */
+    public void start(HttpRequest request, AsyncHttpResponseHandler mListener, Interceptor interceptor){
+
+        // Make sure that everything is perfect!
+        synchronized (this) {
+            if (request == null) {
+                LOG.e("HttpRequest parameter is null!");
+                return;
+            }
+
+            // No need to check thread, because okhttp call method already run in another Thread!!
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                LOG.e("Do not execute this on main thread!!");
+                return;
+            }
+
+            // 기본 read timeout 20초로 설정
+            if(client == null){
+                client = new OkHttpClient.Builder()
+                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
+                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+                        .retryOnConnectionFailure(false)
+                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+                        .build();
+            }
+
+            // Sync 모드
+            if(mListener != null)
+                mListener.setUseSynchronousMode(true);
+
+            if (request.getRequestType() == RequestType.Type.MULTI_PART) {
+                currentTask = new MultipartTask(client, request, mListener, interceptor);
+            } else if (request.getRequestType() == RequestType.Type.STRING) {
+                currentTask = new StringTask(client, request, mListener, interceptor);
+            }
+        }
+        currentTask.run(HttpConnectionTask.SyncType.Sync);
+    }
 }

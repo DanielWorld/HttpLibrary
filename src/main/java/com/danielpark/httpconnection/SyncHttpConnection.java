@@ -3,6 +3,7 @@ package com.danielpark.httpconnection;
 import android.content.Context;
 import android.os.Looper;
 
+import com.danielpark.httpconnection.handler.AsyncHttpResponseHandler;
 import com.danielpark.httpconnection.handler.JsonHttpResponseHandler;
 import com.danielpark.httpconnection.request.HttpRequest;
 import com.danielpark.httpconnection.type.RequestType;
@@ -41,9 +42,7 @@ public class SyncHttpConnection {
     HttpConnectionTask currentTask;
 
     /**
-     * Start HTTP connection
-     * <br>
-     * Because we already took care of Thread issue.
+     * Start Sync HTTP connection with {@link JsonHttpResponseHandler}
      *
      * @param request
      * @throws Exception
@@ -79,7 +78,7 @@ public class SyncHttpConnection {
 
             if (request.getRequestType() == RequestType.Type.MULTI_PART) {
                 currentTask = new MultipartTask(client, request, mListener, interceptor);
-            } else if (request.getRequestType() == RequestType.Type.TEXT) {
+            } else if (request.getRequestType() == RequestType.Type.STRING) {
                 currentTask = new StringTask(client, request, mListener, interceptor);
             }
         }
@@ -87,18 +86,48 @@ public class SyncHttpConnection {
     }
 
     /**
-     * Restart HTTP connection using OkHttp Request
+     * Start Sync HTTP connection with {@link AsyncHttpResponseHandler}
      *
      * @param request
-     * @param callback
+     * @param mListener
+     * @param interceptor
      */
-    public void reStart(Request request, Callback callback) throws Exception {
-        if (request == null)
-            throw new Exception("Request is null!!");
+    public void start(HttpRequest request, AsyncHttpResponseHandler mListener, Interceptor interceptor){
 
-        Call call = client.newCall(request);
-        call.enqueue(callback);
+        // Make sure that everything is perfect!
+        synchronized (this) {
+            if (request == null) {
+                LOG.e("HttpRequest parameter is null!");
+                return;
+            }
 
+            // No need to check thread, because okhttp call method already run in another Thread!!
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                LOG.e("Do not execute this on main thread!!");
+                return;
+            }
+
+            // 기본 read timeout 20초로 설정
+            if(client == null){
+                client = new OkHttpClient.Builder()
+                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
+                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+                        .retryOnConnectionFailure(false)
+                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+                        .build();
+            }
+
+            // Sync 모드
+            if(mListener != null)
+                mListener.setUseSynchronousMode(true);
+
+            if (request.getRequestType() == RequestType.Type.MULTI_PART) {
+                currentTask = new MultipartTask(client, request, mListener, interceptor);
+            } else if (request.getRequestType() == RequestType.Type.STRING) {
+                currentTask = new StringTask(client, request, mListener, interceptor);
+            }
+        }
+        currentTask.run(HttpConnectionTask.SyncType.Sync);
     }
 
 }

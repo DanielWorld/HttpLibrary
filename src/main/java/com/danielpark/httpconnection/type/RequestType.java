@@ -7,10 +7,10 @@ package com.danielpark.httpconnection.type;
 public class RequestType {
 
     public enum Type {
-        TEXT, MULTI_PART
+        STRING, MULTI_PART
     }
 
-    private Type requestType = Type.TEXT;
+    private Type requestType = Type.STRING;
 
     /**
      * Set request type

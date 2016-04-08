@@ -49,7 +49,7 @@ SyncHttpConnection
 </pre>
 그 외 POST, DELETE, PUT 그리고 Multi-part request 등등 Async 와 Sync http connection 의 차이는 이와 동일
 
-### POST
+### POST Json request
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -64,6 +64,26 @@ jsonObject.addProperty("Id", 11324);
 
 request.setContentType(ContentType.getApplicationJson());   // Content-type 설정
 request.addBody(jsonObject.toString);                       // body 추가 (String 형태이며 설정한 Content-type 과 유효해야 한다.)
+
+// Async Http connection 시작
+AsyncHttpConnection
+  .getInstance(android.content.Context)
+    .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
+</pre>
+
+### POST Form request
+<pre>
+HttpRequest request = new HttpRequest();
+request.setURL("url");                            // URL 설정
+request.setMethod(HttpRequest.Method.POST);        // http GET 방식
+request.setRequestType(RequestType.Type.STRING);  // String request 타입
+
+request.addHeader("header_key", "header_value");  // 헤더 추가
+
+request.addParameter("text","uiok");              // Form body 형식으로 추가
+request.addParameter("Id", 22242);
+
+request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type 설정 (기본 content-type 이라 지정안해도 됨)
 
 // Async Http connection 시작
 AsyncHttpConnection
@@ -95,7 +115,7 @@ AsyncHttpConnection
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
-### PUT
+### PUT Json request
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -110,7 +130,6 @@ jsonObject.addProperty("Id", 11324);
 
 request.setContentType(ContentType.getApplicationJson());   // Content-type 설정
 request.addBody(jsonObject.toString);                       // body 추가 (String 형태이며 설정한 Content-type 과 유효해야 한다.)
-//------
 
 // Async Http connection 시작
 AsyncHttpConnection

@@ -25,9 +25,7 @@ public class HttpRequest extends RequestType {
     private ArrayList<NameValue> headers;       // Daniel (2016-04-07 22:52:45): Header
     private ArrayList<NameValue> parameters;    // Daniel (2016-04-07 22:52:54): URL 뒤 파라미터들
     private String body;                        // Daniel (2016-04-07 22:53:07): 전송할 body
-    private String contentType = ContentType.getApplicationXWwwFormUrlencoded();
-    // Daniel (2016-04-07 22:53:24): 전송할 body 의 content-type (기본값은 x-www-form-urlencoded)
-
+    private String contentType;                 // Daniel (2016-04-07 22:53:24): 전송할 body 의 content-type
     private ArrayList<MultipartFile> files;     // Daniel (2016-04-07 22:53:56): Multi-part request 에 사용되는 File
 
     public enum Method {

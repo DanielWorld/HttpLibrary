@@ -101,7 +101,7 @@ class MultipartTask extends HttpConnectionTask {
         for (NameValue n : parameters) {
             builder.addPart(
                     Headers.of("Content-Disposition", "form-data; name=\"" + n.getName() + "\""),
-                    RequestBody.create(null, n.getValue())
+                    RequestBody.create(MediaType.parse(ContentType.getTextPlain()), n.getValue())
             );
         }
 

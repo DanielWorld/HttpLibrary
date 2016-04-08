@@ -73,9 +73,9 @@ public class SyncHttpConnection {
                         .build();
             }
 
-            if(mListener != null){
+            // Sync 모드
+            if(mListener != null)
                 mListener.setUseSynchronousMode(true);
-            }
 
             if (request.getRequestType() == RequestType.Type.MULTI_PART) {
                 currentTask = new MultipartTask(client, request, mListener, interceptor);

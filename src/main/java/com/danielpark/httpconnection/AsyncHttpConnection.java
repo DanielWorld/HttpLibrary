@@ -65,6 +65,10 @@ public class AsyncHttpConnection {
                         .build();
             }
 
+            // Async 모드
+            if(mListener != null)
+                mListener.setUseSynchronousMode(false);
+
             if (request.getRequestType() == RequestType.Type.MULTI_PART) {
                 currentTask = new MultipartTask(client, request,(mListener), interceptor);
             } else if (request.getRequestType() == RequestType.Type.TEXT) {

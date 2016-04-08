@@ -5,20 +5,28 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.danielpark.httpconnection.listener.ResponseHandlerInterface;
+import com.danielpark.httpconnection.network.HttpStatus;
 import com.danielpark.httpconnection.util.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Copyright (c) 2014-2016 daniel@bapul.net
  * Created by Daniel Park on 2016-04-07.
  */
-public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
+public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callback {
 
     private Logger LOG = Logger.getInstance();
 
@@ -193,5 +201,145 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
                 handler.post(runnable);
             }
         }
+    }
+
+    public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
+        // Daniel (2016-04-08 15:21:18): 기본 형태 return
+    }
+
+    public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
+        // Daniel (2016-04-08 15:21:34): 기본 형태 return
+    }
+
+    @Override
+    public void onResponse(Call call, final Response response) throws IOException {
+        if (response.isSuccessful()) {
+            if (response.code() != HttpStatus.SC_NO_CONTENT) {
+                Runnable parser = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onSuccess(response.code(), response.headers(), response.body());
+                                }
+//                            }
+                            });
+                        } catch (Exception e) {
+                            LOG.e(e.getMessage());
+                        }
+                    }
+                };
+
+                try {
+                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                        // Async Http connection 의 경우 thread 로 실행
+                        new Thread(parser).start();
+                    } else {
+                        // Sync Http connection 에서 proceed
+                        parser.run();
+                    }
+                } catch (Exception e) {
+                    LOG.e(e.getMessage());
+                }
+
+            } else {
+                Runnable parser = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            postRunnable(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    onSuccess(response.code(), response.headers(), response.body());
+                                }
+                            });
+                        } catch (Exception e) {
+                            LOG.e(e.getMessage());
+                        }
+                    }
+                };
+
+                try {
+                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                        // Async Http connection 의 경우 thread 로 실행
+                        new Thread(parser).start();
+                    } else {
+                        // Sync Http connection 에서 proceed
+                        parser.run();
+                    }
+                } catch (Exception e) {
+                    LOG.e(e.getMessage());
+                }
+            }
+        } else {
+            Runnable parser = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        postRunnable(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                onFailure(response.code(), response.headers(), response.body());
+                            }
+                        });
+                    } catch (Exception e) {
+                        LOG.e(e.getMessage());
+                    }
+                }
+            };
+
+            try {
+                if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                    // Async Http connection 의 경우 thread 로 실행
+                    new Thread(parser).start();
+                } else {
+                    // Sync Http connection 에서 proceed
+                    parser.run();
+                }
+            } catch (Exception e) {
+                LOG.e(e.getMessage());
+            }
+        }
+
+    }
+
+    @Override
+    public void onFailure(Call call, IOException io) {
+        try{
+            LOG.e(io.getMessage());
+
+            Runnable parser = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        postRunnable(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                onFailure(0, null, null);
+                            }
+                        });
+                    } catch (Exception e) {
+                        LOG.e(e.getMessage());
+                    }
+                }
+            };
+
+            try {
+                if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                    // Async Http connection 의 경우 thread 로 실행
+                    new Thread(parser).start();
+                } else {
+                    // Sync Http connection 에서 proceed
+                    parser.run();
+                }
+            } catch (Exception e) {
+                LOG.e(e.getMessage());
+            }
+        }catch (Exception ignored){}
     }
 }

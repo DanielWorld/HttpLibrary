@@ -16,6 +16,7 @@ import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Copyright (c) 2014-2016 daniel@bapul.net
@@ -25,38 +26,29 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
 
     private static Logger LOG = Logger.getInstance();
 
-    public void onSuccess(int statusCode, Headers headers, String response) {
-
-    }
 
     public void onSuccess(int statusCode, Headers headers, JSONObject response) {
-
+        // Daniel (2016-04-08 15:16:21): response body를 JSONObject 로 변환하여 return
     }
 
     public void onSuccess(int statusCode, Headers headers, JSONArray response) {
-
+        // Daniel (2016-04-08 15:17:00): response body를 JSONArray 로 변환하여 return
     }
 
-    public void onFailure(int statusCode, Headers headers, JSONObject response) {
-
-    }
-
-    public void onFailure(int statusCode, Headers headers, JSONArray response) {
-
+    public void onSuccess(int statusCode, Headers headers, String response) {
+        // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
     }
 
     @Override
     public void onResponse(Call call, final Response response) throws IOException {
-        if (response != null && response.isSuccessful()) {
+        if (response.isSuccessful()) {
             if (response.code() != HttpStatus.SC_NO_CONTENT) {
                 Runnable parser = new Runnable() {
                     @Override
                     public void run() {
                         try {
                             final Object jsonResponse = parseResponse(response.body().bytes());
-//                            if(mListener != null) {
                             postRunnable(new Runnable() {
-
                                 @Override
                                 public void run() {
                                     if (jsonResponse == null)
@@ -100,7 +92,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
 
                                 @Override
                                 public void run() {
-                                    onSuccess(response.code(), response.headers(), new JSONObject());
+                                    onSuccess(response.code(), response.headers(), "");
                                 }
                             });
                         } catch (Exception e) {
@@ -130,7 +122,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
 
                             @Override
                             public void run() {
-                                onFailure(0, null, new JSONObject());
+                                onFailure(response.code(), response.headers(), response.body());
                             }
                         });
                     } catch (Exception e) {
@@ -167,7 +159,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
 
                             @Override
                             public void run() {
-                                onFailure(0, null, new JSONObject());
+                                onFailure(0, null, null);
                             }
                         });
                     } catch (Exception e) {

@@ -7,8 +7,6 @@ package com.danielpark.httpconnection.util;
 
 import android.util.Log;
 
-import com.danielpark.httpconnection.BuildConfig;
-
 /**
  * Created by daniel on 15. 10. 29.
  */

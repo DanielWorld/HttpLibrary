@@ -20,7 +20,6 @@ import okhttp3.MediaType;
  */
 public class HttpRequest extends RequestType {
 
-    private Context context;
     private String URL;
 
     private ArrayList<NameValue> headers;       // Daniel (2016-04-07 22:52:45): Header
@@ -36,8 +35,7 @@ public class HttpRequest extends RequestType {
 
     private Method httpMethod = Method.GET;  // http type. default value is POST
 
-    public HttpRequest(final Context ctx) {
-        this.context = ctx;
+    public HttpRequest() {
         this.headers = new ArrayList<>();
         this.parameters = new ArrayList<>();
 //        this.files = new ArrayList<>();
@@ -183,7 +181,7 @@ public class HttpRequest extends RequestType {
     /**
      * Add file to send to server
      *
-     * @param filePath
+     * @param filePath      해당 파일의
      * @param fileName
      * @param paramName
      * @param contentType

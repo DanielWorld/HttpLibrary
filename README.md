@@ -17,7 +17,7 @@ dependencies {
 }
 </pre>
 
-#### Asynchronous GET
+### Asynchronous GET
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -38,7 +38,7 @@ AsyncHttpConnection
 // new okhttp3.Intercepter 는 null 해도 상관없음.
 </pre>
 
-#### Synchronous GET
+### Synchronous GET
 Asynchronous GET 과 동일 다만 Start 만 다름
 <pre>
 // AsyncHttpConnection 에서 SyncHttpConnection 만 변경됨...
@@ -48,7 +48,7 @@ SyncHttpConnection
 </pre>
 그 외 POST, DELETE, PUT 그리고 Multi-part request 등등 Async 와 Sync http connection 의 차이는 이와 동일
 
-#### POST
+### POST
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -70,7 +70,7 @@ AsyncHttpConnection
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
-#### DELETE
+### DELETE
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -94,7 +94,7 @@ AsyncHttpConnection
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
-#### PUT
+### PUT
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -117,7 +117,7 @@ AsyncHttpConnection
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
-#### Multipart/form-data POST request
+### Multipart/form-data POST request
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -126,11 +126,11 @@ request.setRequestType(RequestType.Type.MULTI_PART);  // Multi-part request 타�
 
 request.addHeader("header_key", "header_value");  // 헤더 추가
 
-// 이미지 파일 추가 (순서대로 파일 경로, 파일 이름, 파라미터 이름, Content-type)
+// 이미지 파일 추가 (순서대로 파일 경로, 파일 이름, 파라미터 이름, 이미지 Content-type)
 request.addFile(new File("aa.png").getAbsolutePath(), new File("aa.png").getName(), "parameterName", ContentType.getApplicationOctetStream());
 
 // 파라미터들 추가
-// 해당 파라미터들 역시 multipart/form-data 형식으로 body에 붙어서 들어간다.
+// 해당 파라미터들 역시 multipart/form-data 형식으로 body에 붙어서 들어간다. (Content-Type = text/plain)
 request.addParameter("Locale", "enUS"); 
 request.addParameter("Id", 134);
 

@@ -38,7 +38,7 @@ public class MultipartFile implements Parcelable {
         this.paramName = parameterName;
 
         if (contentType == null || contentType.isEmpty())
-            this.contentType = ContentType.APPLICATION_OCTET_STREAM;
+            this.contentType = ContentType.getApplicationOctetStream();
         else
             this.contentType = contentType;
     }

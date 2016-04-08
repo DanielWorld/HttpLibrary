@@ -112,7 +112,7 @@ class MultipartTask extends HttpConnectionTask {
                     Headers.of("Content-Disposition", "form-data; name=\"" + m.getParamName() + "\""
                                     + "; filename=\"" + m.getFileName() + "\""
                     ),
-                    RequestBody.create(MediaType.parse(ContentType.APPLICATION_OCTET_STREAM), new File(m.getFilePath()))
+                    RequestBody.create(MediaType.parse(ContentType.getApplicationOctetStream()), new File(m.getFilePath()))
             );
         }
 

@@ -38,7 +38,7 @@
     <methods>;
 }
 -keepclasseswithmembers class com.danielpark.httpconnection.type.ContentType {
-    public static final java.lang.String *;
+    public <methods>;
 }
 
 # enum Method in HttpRequest class

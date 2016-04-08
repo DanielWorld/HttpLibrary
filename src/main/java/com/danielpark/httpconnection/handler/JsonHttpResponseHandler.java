@@ -39,6 +39,14 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
         // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
     }
 
+    public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
+        // Daniel (2016-04-08 15:21:18): 기본 형태 return
+    }
+
+    public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
+        // Daniel (2016-04-08 15:21:34): 기본 형태 return
+    }
+
     @Override
     public void onResponse(Call call, final Response response) throws IOException {
         if (response.isSuccessful()) {

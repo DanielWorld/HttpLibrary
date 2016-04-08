@@ -18,6 +18,7 @@ dependencies {
 </pre>
 
 ### Asynchronous GET
+main thread 에서 실행 필수!
 <pre>
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // URL 설정
@@ -39,7 +40,7 @@ AsyncHttpConnection
 </pre>
 
 ### Synchronous GET
-Asynchronous GET 과 동일 다만 Start 만 다름
+Asynchronous GET 과 동일 다만 Start 만 다름 (main thread 에서 실행불가 X, Service 나 thread 내에서 처리!)
 <pre>
 // AsyncHttpConnection 에서 SyncHttpConnection 만 변경됨...
 SyncHttpConnection

@@ -83,7 +83,7 @@ request.addHeader("header_key", "header_value");  // 헤더 추가
 request.addParameter("text","uiok");              // Form body 형식으로 추가
 request.addParameter("Id", 22242);
 
-request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type 설정 (기본 content-type 이라 지정안해도 됨)
+request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type 설정
 
 // Async Http connection 시작
 AsyncHttpConnection

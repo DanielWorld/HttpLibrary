@@ -13,7 +13,7 @@ allprojects {
 
 dependencies {
   ...
-  compile 'com.github.DanielWorld:HttpLibrary:1.0.1'
+  compile 'com.github.DanielWorld:HttpLibrary:1.0.2'
   // 만약 해당 project 가 상위 프로젝트에 종속되는 경우 (즉 부모 프로젝트가 존재하는 경우) 
   // 최상위 프로젝트에도 repositories 에 maven { url 'https://jitpack.io' } 처리를 해줘야한다.
 }

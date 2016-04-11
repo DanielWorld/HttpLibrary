@@ -40,7 +40,12 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
     }
 
     @Override
-    public void onResponse(Call call, final Response response) throws IOException {
+    public void onFailure(Call call, IOException io) {
+
+    }
+
+    @Override
+    public void onResponse(final Call call, final Response response) throws IOException {
         if (response.isSuccessful()) {
             if (response.code() != HttpStatus.SC_NO_CONTENT) {
                 Runnable parser = new Runnable() {
@@ -122,7 +127,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
 
                             @Override
                             public void run() {
-                                onFailure(response.code(), response.headers(), response.body());
+                                onFailure(call, new IOException("Failed to get 200 ~ 2xx port number"));
                             }
                         });
                     } catch (Exception e) {
@@ -144,42 +149,6 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements
             }
         }
 
-    }
-
-    @Override
-    public void onFailure(Call call, IOException io) {
-        try{
-            LOG.e(io.getMessage());
-
-            Runnable parser = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        postRunnable(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                onFailure(0, null, null);
-                            }
-                        });
-                    } catch (Exception e) {
-                        LOG.e(e.getMessage());
-                    }
-                }
-            };
-
-            try {
-                if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                    // Async Http connection 의 경우 thread 로 실행
-                    new Thread(parser).start();
-                } else {
-                    // Sync Http connection 에서 proceed
-                    parser.run();
-                }
-            } catch (Exception e) {
-                LOG.e(e.getMessage());
-            }
-        }catch (Exception ignored){}
     }
 
     /**

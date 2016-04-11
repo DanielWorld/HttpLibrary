@@ -128,6 +128,37 @@ public class HttpRequest extends RequestType {
     }
 
     /**
+     * Remove certain header by Header name
+     * @param headerName
+     */
+    public void removeHeader(final String headerName){
+        if(headers == null) return;
+
+        for(NameValue nv : headers){
+            if(nv.getName().equals(headerName)){
+                headers.remove(nv);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Remove certain header by Header name & Header value
+     * @param headerName
+     * @param headerValue
+     */
+    public void removeHeader(final String headerName, final String headerValue){
+        if(headers == null) return;
+
+        for(NameValue nv : headers){
+            if(nv.getName().equals(headerName) && nv.getValue().equals(headerValue)){
+                headers.remove(nv);
+                return;
+            }
+        }
+    }
+
+    /**
      * Adds a parameter to this request (Not body but parameters)
      *
      * @param paramName  parameter name

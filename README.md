@@ -175,6 +175,10 @@ public void onSuccess(int statusCode, Headers headers, JSONArray response) {
 public void onSuccess(int statusCode, Headers headers, String response) {
         // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
 }
+
+public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
+	// Daniel (2016-04-08 15:21:34): 기본 형태 return
+}
 </pre>
 
 ### AsyncHttpResponseHandler

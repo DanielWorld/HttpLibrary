@@ -9,11 +9,13 @@
 -keepclasseswithmembers class com.danielpark.httpconnection.AsyncHttpConnection {
     public final static synchronized com.danielpark.httpconnection.AsyncHttpConnection getInstance(android.content.Context);
     public void start(com.danielpark.httpconnection.request.HttpRequest, com.danielpark.httpconnection.handler.JsonHttpResponseHandler, okhttp3.Interceptor);
+    public void start(com.danielpark.httpconnection.request.HttpRequest, com.danielpark.httpconnection.handler.AsyncHttpResponseHandler, okhttp3.Interceptor);
 }
 
 -keepclasseswithmembers class com.danielpark.httpconnection.SyncHttpConnection {
     public final static synchronized com.danielpark.httpconnection.SyncHttpConnection getInstance(android.content.Context);
     public void start(com.danielpark.httpconnection.request.HttpRequest, com.danielpark.httpconnection.handler.JsonHttpResponseHandler, okhttp3.Interceptor);
+    public void start(com.danielpark.httpconnection.request.HttpRequest, com.danielpark.httpconnection.handler.AsyncHttpResponseHandler, okhttp3.Interceptor);
 }
 
 -keepclasseswithmembers class com.danielpark.httpconnection.HttpConnectionTask {

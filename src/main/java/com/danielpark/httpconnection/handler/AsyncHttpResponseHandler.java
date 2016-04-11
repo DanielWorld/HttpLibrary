@@ -207,9 +207,8 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
         // Daniel (2016-04-08 15:21:18): 기본 형태 return
     }
 
-    @Override
-    public void onFailure(Call call, IOException io) {
-
+    public void onFailure(int statusCode, Headers headers, ResponseBody responseBody) {
+        // Daniel (2016-04-11 18:58:50): 기본 형태 return
     }
 
     @Override
@@ -306,6 +305,38 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
             }
         }
 
+    }
+
+    @Override
+    public void onFailure(Call call, IOException io) {
+        Runnable parser = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    postRunnable(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            onFailure(0, new Headers.Builder().build(), null);
+                        }
+                    });
+                } catch (Exception e) {
+                    LOG.e(e.getMessage());
+                }
+            }
+        };
+
+        try {
+            if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                // Async Http connection 의 경우 thread 로 실행
+                new Thread(parser).start();
+            } else {
+                // Sync Http connection 에서 proceed
+                parser.run();
+            }
+        } catch (Exception e) {
+            LOG.e(e.getMessage());
+        }
     }
 
 

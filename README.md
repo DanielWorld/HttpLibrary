@@ -161,3 +161,33 @@ AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
+
+### JsonHttpResponseHandler
+<pre>
+public void onSuccess(int statusCode, Headers headers, JSONObject response) {
+	// Daniel (2016-04-08 15:16:21): response body를 JSONObject 로 변환하여 return
+}
+
+public void onSuccess(int statusCode, Headers headers, JSONArray response) {
+        // Daniel (2016-04-08 15:17:00): response body를 JSONArray 로 변환하여 return
+}
+
+public void onSuccess(int statusCode, Headers headers, String response) {
+        // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
+}
+
+public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
+	// Daniel (2016-04-08 15:21:34): 기본 형태 return
+}
+</pre>
+
+### AsyncHttpResponseHandler
+<pre>
+public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
+        // Daniel (2016-04-08 15:21:18): 기본 형태 return
+}
+
+public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
+	// Daniel (2016-04-08 15:21:34): 기본 형태 return
+}
+</pre>

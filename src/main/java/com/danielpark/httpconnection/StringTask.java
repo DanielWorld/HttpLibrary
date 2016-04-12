@@ -233,11 +233,11 @@ public class StringTask extends HttpConnectionTask {
      */
     private RequestBody createBody(HttpRequest request) {
         if (request == null)
-            return RequestBody.create(null, "");
+            return null;
 
-        // Daniel (2016-04-12 12:18:14): ContentType 이 null 일 경우
-        if (request.getContentType() == null)
-            return RequestBody.create(null, request.getBody());
+        // Daniel (2016-04-12 14:11:05): body 가 없거나 null 일 경우
+        if (request.getBody() == null || request.getBody().trim().isEmpty())
+            return null;
 
         // application/x-www-form-urlencoded
         if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {

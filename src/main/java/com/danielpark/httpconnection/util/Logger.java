@@ -21,8 +21,7 @@ public class Logger {
         return sThis;
     }
 
-    private final String TAG = "OKAY";
-//    private boolean mLogFlag = BuildConfig.DEBUG;
+    private final String TAG = "DANIEL";
     private boolean mLogFlag = true;
 
     public void v(String msg) {

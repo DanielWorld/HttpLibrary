@@ -193,6 +193,8 @@ public class HttpRequest extends RequestType {
      * @return
      */
     public String getBody(){
+        if(body == null)
+            return "";
         return body;
     }
 

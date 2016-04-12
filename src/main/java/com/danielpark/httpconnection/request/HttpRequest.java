@@ -193,8 +193,6 @@ public class HttpRequest extends RequestType {
      * @return
      */
     public String getBody(){
-        if(body == null)
-            return "";
         return body;
     }
 
@@ -206,7 +204,14 @@ public class HttpRequest extends RequestType {
         this.contentType = contentType;
     }
 
+    /**
+     * Get contentType <br>
+     *     default Content-Type is application/x-www-form-urlencoded
+     * @return
+     */
     public String getContentType(){
+        if(contentType == null)
+            return ContentType.getApplicationXWwwFormUrlencoded();
         return contentType;
     }
 

@@ -30,10 +30,10 @@
 -keepclasseswithmembers class com.danielpark.httpconnection.type.RequestType {
     public <methods>;
 }
--keepclasseswithmembernames class com.danielpark.httpconnection.handler.JsonHttpResponseHandler {
+-keepclasseswithmembers class com.danielpark.httpconnection.handler.JsonHttpResponseHandler {
     public <methods>;
 }
--keepclasseswithmembernames class com.danielpark.httpconnection.handler.AsyncHttpResponseHandler {
+-keepclasseswithmembers class com.danielpark.httpconnection.handler.AsyncHttpResponseHandler {
     public <methods>;
 }
 -keepclasseswithmembers interface com.danielpark.httpconnection.listener.ResponseHandlerInterface {

@@ -234,22 +234,30 @@ public class StringTask extends HttpConnectionTask {
         if(request == null)
             return RequestBody.create(null, "");
 
+        // Daniel (2016-04-12 12:18:14): ContentType 이 null 일 경우
+        if(request.getContentType() == null) {
+            if(request.getBody() == null || request.getBody().trim().isEmpty())
+                return RequestBody.create(MediaType.parse(request.getContentType()), "");
+            else
+                return RequestBody.create(null, request.getBody());
+        }
+
 		// application/x-www-form-urlencoded
 		if(request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())){
 			FormBody.Builder builder = new FormBody.Builder();
 
-			for(NameValue nv : httpRequest.getParameters()){
+			for(NameValue nv : request.getParameters()){
 				builder.add(nv.getName(), nv.getValue());
 			}
 			return builder.build();
 		}
         // application/json
         else if(request.getContentType().equals(ContentType.getApplicationJson())){
-            return RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody());
+            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
         }
         // etc
         else{
-            return RequestBody.create(MediaType.parse(httpRequest.getContentType()), httpRequest.getBody());
+            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
         }
     }
 }

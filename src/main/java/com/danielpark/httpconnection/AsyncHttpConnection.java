@@ -64,7 +64,7 @@ public class AsyncHttpConnection {
                 client = new OkHttpClient.Builder()
                         .connectTimeout(20000, TimeUnit.MILLISECONDS)
                         .writeTimeout(20000, TimeUnit.MILLISECONDS)
-                        .retryOnConnectionFailure(false)
+//                        .retryOnConnectionFailure(false)
                         .readTimeout(20000, TimeUnit.MILLISECONDS)
                         .build();
             }
@@ -108,7 +108,7 @@ public class AsyncHttpConnection {
                 client = new OkHttpClient.Builder()
                         .connectTimeout(20000, TimeUnit.MILLISECONDS)
                         .writeTimeout(20000, TimeUnit.MILLISECONDS)
-                        .retryOnConnectionFailure(false)
+//                        .retryOnConnectionFailure(false)
                         .readTimeout(20000, TimeUnit.MILLISECONDS)
                         .build();
             }

@@ -235,10 +235,6 @@ public class StringTask extends HttpConnectionTask {
         if (request == null)
             return null;
 
-        // Daniel (2016-04-12 14:11:05): body 가 없거나 null 일 경우
-        if (request.getBody() == null || request.getBody().trim().isEmpty())
-            return null;
-
         // application/x-www-form-urlencoded
         if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {
             FormBody.Builder builder = new FormBody.Builder();
@@ -248,8 +244,13 @@ public class StringTask extends HttpConnectionTask {
             }
             return builder.build();
         }
+
+        // Daniel (2016-04-12 14:11:05): body 가 없거나 null 일 경우
+        if (request.getBody() == null || request.getBody().trim().isEmpty())
+            return null;
+
         // application/json
-        else if (request.getContentType().equals(ContentType.getApplicationJson())) {
+        if (request.getContentType().equals(ContentType.getApplicationJson())) {
             return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
         }
         // etc

@@ -19,6 +19,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // gradle은 참조된 라이브러리가 debug 모드로 빌드가 안되는 문제를 방지하는 설정. http://stackoverflow.com/a/30134955/361100
+    defaultPublishConfig 'release'
+    publishNonDefault true
+    productFlavors {
+        library {
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled true

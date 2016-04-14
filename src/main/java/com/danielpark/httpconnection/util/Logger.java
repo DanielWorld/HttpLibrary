@@ -6,6 +6,7 @@ package com.danielpark.httpconnection.util;
  */
 
 import android.util.Log;
+import com.danielpark.httpconnection.BuildConfig;
 
 /**
  * Created by daniel on 15. 10. 29.
@@ -22,7 +23,7 @@ public class Logger {
     }
 
     private final String TAG = "DANIEL";
-    private boolean mLogFlag = true;
+    private boolean mLogFlag = BuildConfig.DEBUG;
 
     public void v(String msg) {
         if (mLogFlag) {

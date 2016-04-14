@@ -42,6 +42,9 @@
 -keepclasseswithmembers class com.danielpark.httpconnection.type.ContentType {
     public <methods>;
 }
+-keepclasseswithmembers interface com.danielpark.httpconnection.network.HttpStatus {
+	public static final int *;
+}
 
 # enum Method in HttpRequest class
 -keepclasseswithmembers class com.danielpark.httpconnection.request.HttpRequest$Method {

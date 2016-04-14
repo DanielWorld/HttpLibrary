@@ -22,7 +22,7 @@ import okhttp3.ResponseBody;
  * Copyright (c) 2014-2016 daniel@bapul.net
  * Created by Daniel Park on 2016-04-07.
  */
-public class JsonHttpResponseHandler extends AsyncHttpResponseHandler implements Callback {
+public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     private static Logger LOG = Logger.getInstance();
 

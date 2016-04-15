@@ -283,7 +283,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
                             @Override
                             public void run() {
-                                onFailure(call, new IOException("Failed to get 200 ~ 2xx port numbers"));
+								onFailure(response.code(), response.headers(), response.body());
                             }
                         });
                     } catch (Exception e) {

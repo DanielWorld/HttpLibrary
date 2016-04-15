@@ -24,13 +24,14 @@ android {
         abortOnError false
     }
 
+    // Daniel (2016-04-15 15:25:17): https://jitpack.io 에서 gradle build 시 오류가 발생..
     // gradle은 참조된 라이브러리가 debug 모드로 빌드가 안되는 문제를 방지하는 설정. http://stackoverflow.com/a/30134955/361100
-    defaultPublishConfig 'release'
-    publishNonDefault true
-    productFlavors {
-        library {
-        }
-    }
+//    defaultPublishConfig 'release'
+//    publishNonDefault true
+//    productFlavors {
+//        library {
+//        }
+//    }
 
     buildTypes {
         debug {

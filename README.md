@@ -1,5 +1,5 @@
 # HttpLibrary
-OkHttp 3.0 라이브러리를 이용한 http connection 라이브러리
+HTTP connection library which is based on OkHttp 3.2 library
 
 ## Gradle build
 build.gradle
@@ -14,60 +14,55 @@ allprojects {
 dependencies {
   ...
   compile 'com.github.DanielWorld:HttpLibrary:1.0.2'
-  // 만약 해당 project 가 상위 프로젝트에 종속되는 경우 (즉 부모 프로젝트가 존재하는 경우) 
-  // 최상위 프로젝트에도 repositories 에 maven { url 'https://jitpack.io' } 처리를 해줘야한다.
+  // If current project is dependent on parent project (Indeed, there is parent project)
+  // You should write maven { url 'https://jitpack.io' } in parent's repositories
 }
 </pre>
 
 ### Asynchronous GET
-main thread 에서 실행 필수!
+Excute on the main thread!
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.GET);        // http GET 방식
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.GET);        // Http GET method
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // add Header
 
-request.addParameter("Locale", "enUS");           // 파라미터들 추가
+request.addParameter("Locale", "enUS");           // add Parameter
 request.addParameter("Id", 134);
 
-// Async Http connection 시작
+// Start Async Http connection 
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
-// JsonHttpResponseHandler() 는 response body 가 JSON 형태일 경우, JSON 으로 받을 수 있음, String response 는 Json 형태가 아닐경우 받음
-// (만약 ResponseBody 그대로를 받고 싶다면 AsyncHttpResponseHandler() 를 대신 사용!)
-// new okhttp3.Intercepter 는 null 해도 상관없음.
+
 </pre>
 
 ### Synchronous GET
-Asynchronous GET 과 동일 다만 Start 만 다름 (main thread 에서 실행불가 X, Service 나 thread 내에서 처리!)
 <pre>
-// AsyncHttpConnection 에서 SyncHttpConnection 만 변경됨...
+...
 SyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
-그 외 POST, DELETE, PUT 그리고 Multi-part request 등등 Async 와 Sync http connection 의 차이는 이와 동일
 
 ### POST Json request
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.POST);        // http GET 방식
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.POST);        // Http GET method
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // add Header
 
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
 jsonObject.addProperty("Id", 11324);
 
-request.setContentType(ContentType.getApplicationJson());   // Content-type 설정
-request.addBody(jsonObject.toString);                       // body 추가 (String 형태이며 설정한 Content-type 과 유효해야 한다.)
+request.setContentType(ContentType.getApplicationJson());   // Content-type (required)
+request.addBody(jsonObject.toString);                       // add body	(required)
 
-// Async Http connection 시작
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
@@ -76,18 +71,17 @@ AsyncHttpConnection
 ### POST Form request
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.POST);        // http GET 방식
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.POST);        // Http POST method
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // add Header
 
-request.addParameter("text","uiok");              // Form body 형식으로 추가
+request.addParameter("text","uiok");              // Form body
 request.addParameter("Id", 22242);
 
-request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type 설정
+request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type (required)
 
-// Async Http connection 시작
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
@@ -96,22 +90,21 @@ AsyncHttpConnection
 ### DELETE
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.DELETE);        // http GET 방식
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
 request.setRequestType(RequestType.Type.STRING);  // String request 타입
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // String request type
 
-//----- 추가할 body가 없다면 안넣어도 좋다.
+//----- Add body if it exists
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
 jsonObject.addProperty("Id", 11324);
 
-request.setContentType(ContentType.getApplicationJson());   // Content-type 설정
-request.addBody(jsonObject.toString);                       // body 추가 (String 형태이며 설정한 Content-type 과 유효해야 한다.)
+request.setContentType(ContentType.getApplicationJson());   // Content-type 
+request.addBody(jsonObject.toString);                       // add body
 //------
 
-// Async Http connection 시작
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
@@ -120,20 +113,19 @@ AsyncHttpConnection
 ### PUT Json request
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.DELETE);        // http GET 방식
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.PUT);        // Http PUT method
 request.setRequestType(RequestType.Type.STRING);  // String request 타입
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // add Header
 
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
 jsonObject.addProperty("Id", 11324);
 
-request.setContentType(ContentType.getApplicationJson());   // Content-type 설정
-request.addBody(jsonObject.toString);                       // body 추가 (String 형태이며 설정한 Content-type 과 유효해야 한다.)
+request.setContentType(ContentType.getApplicationJson());   // Content-type
+request.addBody(jsonObject.toString);                       // add body
 
-// Async Http connection 시작
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
@@ -142,21 +134,20 @@ AsyncHttpConnection
 ### Multipart/form-data POST request
 <pre>
 HttpRequest request = new HttpRequest();
-request.setURL("url");                            // URL 설정
-request.setMethod(HttpRequest.Method.POST);        // http POST 방식
-request.setRequestType(RequestType.Type.MULTI_PART);  // Multi-part request 타입
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.POST);        // Http POST method
+request.setRequestType(RequestType.Type.MULTI_PART);  // Multi-part request type
 
-request.addHeader("header_key", "header_value");  // 헤더 추가
+request.addHeader("header_key", "header_value");  // add Header
 
-// 이미지 파일 추가 (순서대로 파일 경로, 파일 이름, 파라미터 이름, 이미지 Content-type)
+// Add Image file (file path, file name, parameter name, image content-type)
 request.addFile(new File("aa.png").getAbsolutePath(), new File("aa.png").getName(), "parameterName", ContentType.getApplicationOctetStream());
 
-// 파라미터들 추가
-// 해당 파라미터들 역시 multipart/form-data 형식으로 body에 붙어서 들어간다. (Content-Type = text/plain)
+// add parameters
+// add to body using multipart/form-data format (Content-Type = text/plain) in multipart/form-data task
 request.addParameter("Locale", "enUS"); 
 request.addParameter("Id", 134);
 
-// Async Http connection 시작
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
@@ -165,29 +156,29 @@ AsyncHttpConnection
 ### JsonHttpResponseHandler
 <pre>
 public void onSuccess(int statusCode, Headers headers, JSONObject response) {
-	// Daniel (2016-04-08 15:16:21): response body를 JSONObject 로 변환하여 return
+	// JSONObject response (there should be contents)
 }
 
 public void onSuccess(int statusCode, Headers headers, JSONArray response) {
-        // Daniel (2016-04-08 15:17:00): response body를 JSONArray 로 변환하여 return
+        // JSONArray response (there should be contents)
 }
 
 public void onSuccess(int statusCode, Headers headers, String response) {
-        // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
+       // String response (it could be empty)
 }
 
 public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
-	// Daniel (2016-04-08 15:21:34): 기본 형태 return
+	// Failure response
 }
 </pre>
 
 ### AsyncHttpResponseHandler
 <pre>
 public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
-        // Daniel (2016-04-08 15:21:18): 기본 형태 return
+       
 }
 
 public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
-	// Daniel (2016-04-08 15:21:34): 기본 형태 return
+	
 }
 </pre>

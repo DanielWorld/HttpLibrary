@@ -137,18 +137,31 @@ class MultipartTask extends HttpConnectionTask {
             case GET:
                 LOG.e("Multipart request doesn't support GET method!!");
                 return;
+			case PUT:
+				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
+				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
+				multipartBody.setType(MultipartBody.FORM);
+
+				addMultiPart(multipartBody, httpRequest);
+				MultipartBody requestBody = multipartBody.build();
+
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set PUT body
+				requestBuilder.put(requestBody);
+				break;
             case POST:
                 // Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
-                MultipartBody.Builder multipartBody = new MultipartBody.Builder();
-                multipartBody.setType(MultipartBody.FORM);
+                MultipartBody.Builder multipartBody1 = new MultipartBody.Builder();
+                multipartBody1.setType(MultipartBody.FORM);
 
-                addMultiPart(multipartBody, httpRequest);
-                MultipartBody requestBody = multipartBody.build();
+                addMultiPart(multipartBody1, httpRequest);
+                MultipartBody requestBody1 = multipartBody1.build();
 
                 // set URL
                 requestBuilder.url(createPostURL());
                 // set POST body
-                requestBuilder.post(requestBody);
+                requestBuilder.post(requestBody1);
                 break;
             default:
                 break;
@@ -185,19 +198,31 @@ class MultipartTask extends HttpConnectionTask {
                 LOG.e("Multipart request doesn't support GET method!!");
                 return;
 			case PUT:
-            case POST:
-                // Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
-                MultipartBody.Builder multipartBody = new MultipartBody.Builder();
-                multipartBody.setType(MultipartBody.FORM);
+				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
+				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
+				multipartBody.setType(MultipartBody.FORM);
 
-                addMultiPart(multipartBody, httpRequest);
-                MultipartBody requestBody = multipartBody.build();
+				addMultiPart(multipartBody, httpRequest);
+				MultipartBody requestBody = multipartBody.build();
 
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST body
-                requestBuilder.post(requestBody);
-                break;
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set PUT body
+				requestBuilder.put(requestBody);
+				break;
+			case POST:
+				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
+				MultipartBody.Builder multipartBody1 = new MultipartBody.Builder();
+				multipartBody1.setType(MultipartBody.FORM);
+
+				addMultiPart(multipartBody1, httpRequest);
+				MultipartBody requestBody1 = multipartBody1.build();
+
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set POST body
+				requestBuilder.post(requestBody1);
+				break;
             default:
                 break;
         }

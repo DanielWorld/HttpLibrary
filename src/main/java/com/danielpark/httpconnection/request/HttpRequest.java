@@ -7,6 +7,7 @@ import com.danielpark.httpconnection.model.NameValue;
 import com.danielpark.httpconnection.type.ContentType;
 import com.danielpark.httpconnection.type.RequestType;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -215,23 +216,21 @@ public class HttpRequest extends RequestType {
         return contentType;
     }
 
-    /**
-     * Add file to send to server
-     *
-     * @param filePath      해당 파일의
-     * @param fileName
-     * @param paramName
-     * @param contentType
-     * @return
-     * @throws FileNotFoundException
-     */
-    public HttpRequest addFile(String filePath, String fileName, String paramName, String contentType) throws FileNotFoundException {
-        if (files == null)
-            files = new ArrayList<>();
+	/**
+	 * Add file to send to server
+	 * @param file
+	 * @param paramName
+	 * @param contentType
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public HttpRequest addFile(File file, String paramName, String contentType) throws FileNotFoundException {
+		if (files == null)
+			files = new ArrayList<>();
 
-        files.add(new MultipartFile(filePath, fileName, paramName, contentType));
-        return this;
-    }
+		files.add(new MultipartFile(file.getAbsolutePath(), file.getName(), paramName, contentType));
+		return this;
+	}
 
     public ArrayList<MultipartFile> getFiles() {
         if (files == null)

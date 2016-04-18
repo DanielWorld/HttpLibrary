@@ -184,6 +184,7 @@ class MultipartTask extends HttpConnectionTask {
             case GET:
                 LOG.e("Multipart request doesn't support GET method!!");
                 return;
+			case PUT:
             case POST:
                 // Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
                 MultipartBody.Builder multipartBody = new MultipartBody.Builder();

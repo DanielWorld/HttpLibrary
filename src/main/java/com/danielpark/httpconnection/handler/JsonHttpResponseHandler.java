@@ -28,15 +28,15 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
 
     public void onSuccess(int statusCode, Headers headers, JSONObject response) {
-        // Daniel (2016-04-08 15:16:21): response body를 JSONObject 로 변환하여 return
+        // Daniel (2016-04-08 15:16:21): convert response body to JSONObject and then return it
     }
 
     public void onSuccess(int statusCode, Headers headers, JSONArray response) {
-        // Daniel (2016-04-08 15:17:00): response body를 JSONArray 로 변환하여 return
+        // Daniel (2016-04-08 15:17:00): convert response body to JSONArray and then return it
     }
 
     public void onSuccess(int statusCode, Headers headers, String response) {
-        // Daniel (2016-04-08 15:17:54): response body가 null 이거나 JSONObject, JSONArray 형태가 아닐경우 return
+        // Daniel (2016-04-08 15:17:54): None of JSONObject and JSONArray should return string format
     }
 
     @Override
@@ -73,10 +73,10 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
                 try {
                     if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // Async Http connection 의 경우 thread 로 실행
+                        // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
-                        // Sync Http connection 에서 proceed
+                        // proceed in Sync Http connection mode
                         parser.run();
                     }
                 } catch (Exception e) {
@@ -103,10 +103,10 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
                 try {
                     if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // Async Http connection 의 경우 thread 로 실행
+                        // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
-                        // Sync Http connection 에서 proceed
+                        // proceed in Sync Http connection mode
                         parser.run();
                     }
                 } catch (Exception e) {
@@ -133,10 +133,10 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
             try {
                 if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                    // Async Http connection 의 경우 thread 로 실행
+                    // proceed in Async Http connection mode
                     new Thread(parser).start();
                 } else {
-                    // Sync Http connection 에서 proceed
+                    // proceed in Sync Http connection mode
                     parser.run();
                 }
             } catch (Exception e) {
@@ -167,10 +167,10 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
         try {
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                // Async Http connection 의 경우 thread 로 실행
+                // proceed in Async Http connection mode
                 new Thread(parser).start();
             } else {
-                // Sync Http connection 에서 proceed
+                // proceed in Sync Http connection mode
                 parser.run();
             }
         } catch (Exception e) {

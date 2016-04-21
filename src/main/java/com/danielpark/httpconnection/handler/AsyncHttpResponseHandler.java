@@ -192,7 +192,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
     protected void postRunnable(Runnable runnable) {
         if (runnable != null) {
-            if (getUseSynchronousMode() || handler == null) // 또는 sync 모드일 경우
+            if (getUseSynchronousMode() || handler == null) // or Sync mode
             {
                 // This response handler is synchronous, run on current thread
                 runnable.run();
@@ -204,11 +204,11 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
     }
 
     public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
-        // Daniel (2016-04-08 15:21:18): 기본 형태 return
+        // Daniel (2016-04-08 15:21:18): return default arguments
     }
 
     public void onFailure(int statusCode, Headers headers, ResponseBody responseBody) {
-        // Daniel (2016-04-11 18:58:50): 기본 형태 return
+        // Daniel (2016-04-11 18:58:50): return default arguments
     }
 
     @Override
@@ -234,10 +234,10 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
                 try {
                     if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // Async Http connection 의 경우 thread 로 실행
+                        // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
-                        // Sync Http connection 에서 proceed
+                        // proceed in Sync Http connection mode
                         parser.run();
                     }
                 } catch (Exception e) {
@@ -264,10 +264,10 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
                 try {
                     if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // Async Http connection 의 경우 thread 로 실행
+                        // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
-                        // Sync Http connection 에서 proceed
+                        // proceed in Sync Http connection mode
                         parser.run();
                     }
                 } catch (Exception e) {
@@ -294,10 +294,10 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
             try {
                 if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                    // Async Http connection 의 경우 thread 로 실행
+                    // proceed in Async Http connection mode
                     new Thread(parser).start();
                 } else {
-                    // Sync Http connection 에서 proceed
+                    // proceed in Sync Http connection mode
                     parser.run();
                 }
             } catch (Exception e) {
@@ -328,10 +328,10 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 
         try {
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                // Async Http connection 의 경우 thread 로 실행
+                // proceed in Async Http connection mode
                 new Thread(parser).start();
             } else {
-                // Sync Http connection 에서 proceed
+                // proceed in Sync Http connection mode
                 parser.run();
             }
         } catch (Exception e) {

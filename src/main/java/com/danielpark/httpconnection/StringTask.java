@@ -121,7 +121,7 @@ public class StringTask extends HttpConnectionTask {
         return detailURL.url();
     }
 
-    // Daniel (2016-04-07 12:04:10): Async 형태로 연결
+    // Daniel (2016-04-07 12:04:10): Async connection
     private void connectionAsync() {
         Request.Builder requestBuilder = new Request.Builder();
 
@@ -169,7 +169,7 @@ public class StringTask extends HttpConnectionTask {
         call.enqueue(callback); // Thread-safe execution, No need to create other thread...
     }
 
-    // Daniel (2016-04-07 12:03:34): Sync 형태로 연결
+    // Daniel (2016-04-07 12:03:34): Sync connection
     private void connectionSync() {
         Request.Builder requestBuilder = new Request.Builder();
 
@@ -245,7 +245,6 @@ public class StringTask extends HttpConnectionTask {
             return builder.build();
         }
 
-        // Daniel (2016-04-12 14:11:05): body 가 없거나 null 일 경우
         if (request.getBody() == null || request.getBody().trim().isEmpty())
             return null;
 

@@ -120,7 +120,7 @@ class MultipartTask extends HttpConnectionTask {
     }
 
 
-    // Daniel (2016-04-07 17:47:12): Sync 형태로 연결
+    // Daniel (2016-04-07 17:47:12): Sync Connection
     private void connectionSync(){
         Request.Builder requestBuilder = new Request.Builder();
 
@@ -138,7 +138,6 @@ class MultipartTask extends HttpConnectionTask {
                 LOG.e("Multipart request doesn't support GET method!!");
                 return;
 			case PUT:
-				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
 				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
 				multipartBody.setType(MultipartBody.FORM);
 
@@ -151,7 +150,6 @@ class MultipartTask extends HttpConnectionTask {
 				requestBuilder.put(requestBody);
 				break;
             case POST:
-                // Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
                 MultipartBody.Builder multipartBody1 = new MultipartBody.Builder();
                 multipartBody1.setType(MultipartBody.FORM);
 
@@ -181,6 +179,7 @@ class MultipartTask extends HttpConnectionTask {
         }
     }
 
+    // Daniel (2016-04-20 18:44:31): Async connection
     private void connectionAsync(){
         Request.Builder requestBuilder = new Request.Builder();
 
@@ -198,7 +197,6 @@ class MultipartTask extends HttpConnectionTask {
                 LOG.e("Multipart request doesn't support GET method!!");
                 return;
 			case PUT:
-				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
 				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
 				multipartBody.setType(MultipartBody.FORM);
 
@@ -211,7 +209,6 @@ class MultipartTask extends HttpConnectionTask {
 				requestBuilder.put(requestBody);
 				break;
 			case POST:
-				// Daniel (2016-04-07 17:59:42): TODO: Multipart 의 경우 type 을 또 따로 설정하게 해줘야 함.
 				MultipartBody.Builder multipartBody1 = new MultipartBody.Builder();
 				multipartBody1.setType(MultipartBody.FORM);
 

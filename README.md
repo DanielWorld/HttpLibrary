@@ -4,18 +4,18 @@ HTTP connection library which is based on OkHttp 3.2 library
 ## Gradle build
 build.gradle
 <pre>
-allprojects {
+buildscript {
 		repositories {
 			...
-			maven { url "https://jitpack.io" }
+			jcenter()
 		}
 	}
 
 dependencies {
   ...
-  compile 'com.github.DanielWorld:HttpLibrary:1.0.2'
+  compile 'com.danielworld:http-connection-library:1.0.9'
   // If current project is dependent on parent project (Indeed, there is parent project)
-  // You should write maven { url 'https://jitpack.io' } in parent's repositories
+  // You should write jcenter() in parent's repositories
 }
 </pre>
 

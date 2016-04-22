@@ -149,13 +149,14 @@ public class StringTask extends HttpConnectionTask {
                 break;
             case PUT:
                 // set URL
-                requestBuilder.url(createGetURL());
+                requestBuilder.url(createPostURL());
                 // set POST method
                 requestBuilder.put(createBody(httpRequest));
                 break;
             case DELETE:
                 // set URL
-                requestBuilder.url(createPostURL());
+//                requestBuilder.url(createPostURL());
+                requestBuilder.url(createGetURL());
                 // set DELETE method
                 requestBuilder.delete(createBody(httpRequest));
                 break;

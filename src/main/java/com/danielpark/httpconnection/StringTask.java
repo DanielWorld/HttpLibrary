@@ -52,13 +52,7 @@ public class StringTask extends HttpConnectionTask {
         if (syncType == null)
             return;
 
-        if (syncType == SyncType.Sync) {
-            connectionSync();
-        } else if (syncType == SyncType.Async) {
-            connectionAsync();
-        }
-
-
+		build(syncType);
     }
 
     /**
@@ -121,48 +115,57 @@ public class StringTask extends HttpConnectionTask {
         return detailURL.url();
     }
 
+	private void build(final SyncType syncType){
+		Request.Builder requestBuilder = new Request.Builder();
+
+		// Parsing Headers
+		ArrayList<NameValue> headers = httpRequest.getHeaders();
+
+		for (NameValue n : headers) {
+			requestBuilder.header(n.getName(), n.getValue());
+			// if you want to add multiple values with same name then
+			// use "requestBuilder.addheader(name, value);"
+		}
+
+		switch (httpRequest.getMethod()) {
+			case GET:
+				// set URL
+				requestBuilder.url(createGetURL());
+				// set GET method
+				requestBuilder.get();
+				break;
+			case POST:
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set POST method
+				requestBuilder.post(createBody(httpRequest));
+				break;
+			case PUT:
+				// set URL
+				requestBuilder.url(createPostURL());
+				// set POST method
+				requestBuilder.put(createBody(httpRequest));
+				break;
+			case DELETE:
+				// set URL
+//                requestBuilder.url(createPostURL());
+				requestBuilder.url(createGetURL());
+				// set DELETE method
+				requestBuilder.delete(createBody(httpRequest));
+				break;
+			default:
+				break;
+		}
+
+		if (syncType == SyncType.Async) {
+			connectionAsync(requestBuilder);
+		} else if (syncType == SyncType.Sync) {
+			connectionSync(requestBuilder);
+		}
+	}
+
     // Daniel (2016-04-07 12:04:10): Async connection
-    private void connectionAsync() {
-        Request.Builder requestBuilder = new Request.Builder();
-
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
-
-        for (NameValue n : headers) {
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()) {
-            case GET:
-                // set URL
-                requestBuilder.url(createGetURL());
-                // set GET method
-                requestBuilder.get();
-                break;
-            case POST:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(createBody(httpRequest));
-                break;
-            case PUT:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.put(createBody(httpRequest));
-                break;
-            case DELETE:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set DELETE method
-                requestBuilder.delete(createBody(httpRequest));
-                break;
-            default:
-                break;
-        }
-
+    private void connectionAsync(Request.Builder requestBuilder) {
         final Request request = requestBuilder.build();
 
         Call call = client.newCall(request);
@@ -170,52 +173,10 @@ public class StringTask extends HttpConnectionTask {
     }
 
     // Daniel (2016-04-07 12:03:34): Sync connection
-    private void connectionSync() {
-        Request.Builder requestBuilder = new Request.Builder();
-
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
-
-        for (NameValue n : headers) {
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()) {
-            case GET:
-                // set URL
-                requestBuilder.url(createGetURL());
-                // set GET method
-                requestBuilder.get();
-                break;
-            case POST:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(createBody(httpRequest));
-                break;
-            case PUT:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.put(createBody(httpRequest));
-                break;
-            case DELETE:
-                // set URL
-//                requestBuilder.url(createPostURL());
-                requestBuilder.url(createGetURL());
-                // set DELETE method
-                requestBuilder.delete(createBody(httpRequest));
-                break;
-            default:
-                break;
-        }
-
+    private void connectionSync(Request.Builder requestBuilder) {
         final Request request = requestBuilder.build();
 
         Call call = client.newCall(request);
-//        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
         try {
             Response response = call.execute();
 
@@ -224,7 +185,6 @@ public class StringTask extends HttpConnectionTask {
         } catch (IOException e) {
             LOG.e(e.getMessage());
         }
-
     }
 
     /**

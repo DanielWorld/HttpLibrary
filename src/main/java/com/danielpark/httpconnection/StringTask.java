@@ -203,7 +203,8 @@ public class StringTask extends HttpConnectionTask {
                 break;
             case DELETE:
                 // set URL
-                requestBuilder.url(createPostURL());
+//                requestBuilder.url(createPostURL());
+                requestBuilder.url(createGetURL());
                 // set DELETE method
                 requestBuilder.delete(createBody(httpRequest));
                 break;

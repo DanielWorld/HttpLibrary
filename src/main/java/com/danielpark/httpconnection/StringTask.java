@@ -246,14 +246,14 @@ public class StringTask extends HttpConnectionTask {
             return builder.build();
         }
 
-        if (request.getBody() == null || request.getBody().trim().isEmpty())
-            return null;
-
         // application/json
         if (request.getContentType().equals(ContentType.getApplicationJson())) {
             return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
         }
+
         // etc
+        if (request.getBody() == null || request.getBody().trim().isEmpty())
+            return RequestBody.create(null, new byte[0]);
         else {
             return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
         }

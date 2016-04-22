@@ -57,12 +57,7 @@ class MultipartTask extends HttpConnectionTask {
         if(syncType == null)
             return;
 
-        if(syncType == SyncType.Sync){
-            connectionSync();
-        }
-        else if(syncType == SyncType.Async){
-            connectionAsync();
-        }
+		build(syncType);
     }
 
     /**
@@ -119,83 +114,22 @@ class MultipartTask extends HttpConnectionTask {
         return builder;
     }
 
+	private void build(final SyncType syncType) {
+		Request.Builder requestBuilder = new Request.Builder();
 
-    // Daniel (2016-04-07 17:47:12): Sync Connection
-    private void connectionSync(){
-        Request.Builder requestBuilder = new Request.Builder();
+		// Parsing Headers
+		ArrayList<NameValue> headers = httpRequest.getHeaders();
 
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
+		for(NameValue n : headers){
+			requestBuilder.header(n.getName(), n.getValue());
+			// if you want to add multiple values with same name then
+			// use "requestBuilder.addheader(name, value);"
+		}
 
-        for(NameValue n : headers){
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()){
-            case GET:
-                LOG.e("Multipart request doesn't support GET method!!");
-                return;
-			case PUT:
-				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
-				multipartBody.setType(MultipartBody.FORM);
-
-				addMultiPart(multipartBody, httpRequest);
-				MultipartBody requestBody = multipartBody.build();
-
-				// set URL
-				requestBuilder.url(createPostURL());
-				// set PUT body
-				requestBuilder.put(requestBody);
-				break;
-            case POST:
-                MultipartBody.Builder multipartBody1 = new MultipartBody.Builder();
-                multipartBody1.setType(MultipartBody.FORM);
-
-                addMultiPart(multipartBody1, httpRequest);
-                MultipartBody requestBody1 = multipartBody1.build();
-
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST body
-                requestBuilder.post(requestBody1);
-                break;
-            default:
-                break;
-        }
-//
-        final Request request = requestBuilder.build();
-
-        Call call = client.newCall(request);
-//        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
-        try {
-            Response response = call.execute();
-
-            if(callback != null)
-                callback.onResponse(call, response);
-        } catch (IOException e) {
-            LOG.e(e.getMessage());
-        }
-    }
-
-    // Daniel (2016-04-20 18:44:31): Async connection
-    private void connectionAsync(){
-        Request.Builder requestBuilder = new Request.Builder();
-
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
-
-        for(NameValue n : headers){
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()){
-            case GET:
-                LOG.e("Multipart request doesn't support GET method!!");
-                return;
+		switch (httpRequest.getMethod()){
+			case GET:
+				LOG.e("Multipart request doesn't support GET method!!");
+				return;
 			case PUT:
 				MultipartBody.Builder multipartBody = new MultipartBody.Builder();
 				multipartBody.setType(MultipartBody.FORM);
@@ -220,10 +154,35 @@ class MultipartTask extends HttpConnectionTask {
 				// set POST body
 				requestBuilder.post(requestBody1);
 				break;
-            default:
-                break;
+			default:
+				break;
+		}
+
+		if(syncType == SyncType.Async) {
+			connectionAsync(requestBuilder);
+		} else if (syncType == SyncType.Sync) {
+			connectionSync(requestBuilder);
+		}
+	}
+
+
+    // Daniel (2016-04-07 17:47:12): Sync Connection
+    private void connectionSync(Request.Builder requestBuilder){
+        final Request request = requestBuilder.build();
+
+        Call call = client.newCall(request);
+
+        try {
+            Response response = call.execute();
+            if(callback != null)
+                callback.onResponse(call, response);
+        } catch (IOException e) {
+            LOG.e(e.getMessage());
         }
-//
+    }
+
+    // Daniel (2016-04-20 18:44:31): Async connection
+    private void connectionAsync(Request.Builder requestBuilder){
         final Request request = requestBuilder.build();
 
         Call call = client.newCall(request);

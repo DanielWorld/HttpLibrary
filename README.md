@@ -96,18 +96,44 @@ request.setRequestType(RequestType.Type.STRING);  // String request 타입
 
 request.addHeader("header_key", "header_value");  // String request type
 
-//----- Add body if it exists (Json Request)
+AsyncHttpConnection
+  .getInstance(android.content.Context)
+    .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
+</pre>
+
+### DELETE Json request
+<pre>
+HttpRequest request = new HttpRequest();
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
+request.setRequestType(RequestType.Type.STRING);  // String request 타입
+
+request.addHeader("header_key", "header_value");  // String request type
+
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
 jsonObject.addProperty("Id", 11324);
 
 request.setContentType(ContentType.getApplicationJson());   // Content-type 
 request.addBody(jsonObject.toString);                       // add body
-//------
-//------ Query String
+
+AsyncHttpConnection
+  .getInstance(android.content.Context)
+    .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
+</pre>
+
+### DELETE Query string
+<pre>
+HttpRequest request = new HttpRequest();
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
+request.setRequestType(RequestType.Type.STRING);  // String request 타입
+
+request.addHeader("header_key", "header_value");  // String request type
+
 request.addParameter("abc", "sfd");
 request.addParameter("23sd", 22344);
-//------
+
 AsyncHttpConnection
   .getInstance(android.content.Context)
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);

@@ -206,13 +206,10 @@ public class HttpRequest extends RequestType {
     }
 
     /**
-     * Get contentType <br>
-     *     default Content-Type is application/x-www-form-urlencoded
+     * Get contentType
      * @return
      */
     public String getContentType(){
-        if(contentType == null)
-            return ContentType.getApplicationXWwwFormUrlencoded();
         return contentType;
     }
 

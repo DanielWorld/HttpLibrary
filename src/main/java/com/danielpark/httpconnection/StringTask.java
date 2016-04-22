@@ -203,7 +203,8 @@ public class StringTask extends HttpConnectionTask {
                 break;
             case DELETE:
                 // set URL
-                requestBuilder.url(createPostURL());
+//                requestBuilder.url(createPostURL());
+                requestBuilder.url(createGetURL());
                 // set DELETE method
                 requestBuilder.delete(createBody(httpRequest));
                 break;
@@ -235,26 +236,29 @@ public class StringTask extends HttpConnectionTask {
         if (request == null)
             return null;
 
-        // application/x-www-form-urlencoded
-        if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {
-            FormBody.Builder builder = new FormBody.Builder();
+		// Content-Type is not NULL
+		if(request.getContentType() != null) {
+			// application/x-www-form-urlencoded
+			if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {
+				FormBody.Builder builder = new FormBody.Builder();
 
-            for (NameValue nv : request.getParameters()) {
-                builder.add(nv.getName(), nv.getValue());
-            }
-            return builder.build();
-        }
+				for (NameValue nv : request.getParameters()) {
+					builder.add(nv.getName(), nv.getValue());
+				}
+				return builder.build();
+			}
 
+			// application/json
+			if (request.getContentType().equals(ContentType.getApplicationJson())) {
+				return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
+			}
+		}
+
+		// Content-Type is NULL
         if (request.getBody() == null || request.getBody().trim().isEmpty())
-            return null;
-
-        // application/json
-        if (request.getContentType().equals(ContentType.getApplicationJson())) {
-            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
-        }
-        // etc
+            return RequestBody.create(null, new byte[0]);
         else {
-            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
+            return RequestBody.create(null, request.getBody());
         }
     }
 }

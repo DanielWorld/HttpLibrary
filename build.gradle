@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
@@ -18,7 +18,7 @@ publish {
     userOrg = 'danielworld'
     groupId = 'com.danielworld'
     artifactId = 'http-connection-library'
-    publishVersion = '1.1.0'
+    publishVersion = '1.1.1'
     desc = 'A wrapper for Okhttp library and it helps connection to server using HTTP / HTTPS easily'
     website = 'https://github.com/DanielWorld/HttpLibrary'
     issueTracker = "${website}/issues"
@@ -33,7 +33,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
-        versionName "1.1.0"
+        versionName "1.1.1"
     }
 
     lintOptions {

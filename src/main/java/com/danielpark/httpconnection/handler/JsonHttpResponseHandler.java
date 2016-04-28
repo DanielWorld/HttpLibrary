@@ -35,11 +35,17 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         // Daniel (2016-04-08 15:17:00): convert response body to JSONArray and then return it
     }
 
+	@Override
     public void onSuccess(int statusCode, Headers headers, String response) {
         // Daniel (2016-04-08 15:17:54): None of JSONObject and JSONArray should return string format
     }
 
-    @Override
+	@Override
+	public void onFailure(int statusCode, Headers headers, String response) {
+
+	}
+
+	@Override
     public void onResponse(final Call call, final Response response) throws IOException {
         if (response.isSuccessful()) {
             if (response.code() != HttpStatus.SC_NO_CONTENT) {
@@ -57,11 +63,9 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                                         onSuccess(response.code(), response.headers(), (JSONObject) jsonResponse);
                                     else if (jsonResponse instanceof JSONArray)
                                         onSuccess(response.code(), response.headers(), (JSONArray) jsonResponse);
-                                    else if (jsonResponse instanceof String) {
+                                    else if (jsonResponse instanceof String)
                                         onSuccess(response.code(), response.headers(), (String) jsonResponse);
-                                    }
                                 }
-//                            }
                             });
                         } catch (final JSONException ex) {
                             LOG.e(ex.getMessage());
@@ -118,11 +122,19 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 @Override
                 public void run() {
                     try {
+                        final Object jsonResponse = parseResponse(response.body().bytes());
                         postRunnable(new Runnable() {
 
                             @Override
                             public void run() {
-                                onFailure(response.code(), response.headers(), response.body());
+                                if (jsonResponse == null)
+                                    onFailure(response.code(), response.headers(), "");
+                                else if (jsonResponse instanceof JSONObject)
+                                    onFailure(response.code(), response.headers(), jsonResponse.toString());
+                                else if (jsonResponse instanceof JSONArray)
+                                    onFailure(response.code(), response.headers(), jsonResponse.toString());
+                                else if (jsonResponse instanceof String)
+                                    onFailure(response.code(), response.headers(), (String) jsonResponse);
                             }
                         });
                     } catch (Exception e) {
@@ -156,7 +168,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
                         @Override
                         public void run() {
-                            onFailure(0, new Headers.Builder().build(), null);
+                            onFailure(0, new Headers.Builder().build(), "");
                         }
                     });
                 } catch (Exception e) {
@@ -186,7 +198,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      * @return Object parsedResponse
      * @throws org.json.JSONException exception if thrown while parsing JSON
      */
-    protected Object parseResponse(byte[] responseBody) throws JSONException {
+    private Object parseResponse(byte[] responseBody) throws JSONException {
         if (responseBody == null)
             return null;
         Object result = null;
@@ -205,7 +217,6 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             else if (jsonString.startsWith("\"") && jsonString.endsWith("\"")) {
                 result = jsonString.substring(1, jsonString.length() - 1);
             }
-//            }
         }
         if (result == null) {
             result = jsonString;
@@ -220,7 +231,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      * @param stringBytes response bytes
      * @return String of set encoding or null
      */
-    public static String getResponseString(byte[] stringBytes, String charset) {
+    private String getResponseString(byte[] stringBytes, String charset) {
         try {
             String toReturn = (stringBytes == null) ? null : new String(stringBytes, charset);
             if (toReturn != null && toReturn.startsWith(UTF8_BOM)) {

@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 
@@ -21,6 +22,7 @@ import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.json.JSONTokener;
 
 /**
  * Copyright (c) 2014-2016 daniel@bapul.net
@@ -203,141 +205,166 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
         }
     }
 
-    public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
+    public void onSuccess(int statusCode, Headers headers, String response) {
         // Daniel (2016-04-08 15:21:18): return default arguments
     }
 
-    public void onFailure(int statusCode, Headers headers, ResponseBody responseBody) {
+    public void onFailure(int statusCode, Headers headers, String response) {
         // Daniel (2016-04-11 18:58:50): return default arguments
     }
 
-    @Override
-    public void onResponse(final Call call, final Response response) throws IOException {
-        if (response.isSuccessful()) {
-            if (response.code() != HttpStatus.SC_NO_CONTENT) {
-                Runnable parser = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            postRunnable(new Runnable() {
-                                @Override
-                                public void run() {
-                                    onSuccess(response.code(), response.headers(), response.body());
-                                }
-//                            }
-                            });
-                        } catch (Exception e) {
-                            LOG.e(e.getMessage());
-                        }
-                    }
-                };
+	@Override
+	public void onResponse(final Call call, final Response response) throws IOException {
+		if (response.isSuccessful()) {
+			if (response.code() != HttpStatus.SC_NO_CONTENT) {
+				Runnable parser = new Runnable() {
+					@Override
+					public void run() {
+						try {
+							final String jsonResponse = getResponseString(response.body().bytes());
+							postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									if (jsonResponse == null)
+										onSuccess(response.code(), response.headers(), "");
+									else
+										onSuccess(response.code(), response.headers(), jsonResponse);
+								}
+							});
+						} catch (IOException e) {
+							LOG.e(e.getMessage());
+						}
+					}
+				};
 
-                try {
-                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // proceed in Async Http connection mode
-                        new Thread(parser).start();
-                    } else {
-                        // proceed in Sync Http connection mode
-                        parser.run();
-                    }
-                } catch (Exception e) {
-                    LOG.e(e.getMessage());
-                }
+				try {
+					if (!getUseSynchronousMode() && !getUsePoolThread()) {
+						// proceed in Async Http connection mode
+						new Thread(parser).start();
+					} else {
+						// proceed in Sync Http connection mode
+						parser.run();
+					}
+				} catch (Exception e) {
+					LOG.e(e.getMessage());
+				}
 
-            } else {
-                Runnable parser = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            postRunnable(new Runnable() {
+			} else {
+				Runnable parser = new Runnable() {
+					@Override
+					public void run() {
+						try {
+							postRunnable(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    onSuccess(response.code(), response.headers(), response.body());
-                                }
-                            });
-                        } catch (Exception e) {
-                            LOG.e(e.getMessage());
-                        }
-                    }
-                };
+								@Override
+								public void run() {
+									onSuccess(response.code(), response.headers(), "");
+								}
+							});
+						} catch (Exception e) {
+							LOG.e(e.getMessage());
+						}
+					}
+				};
 
-                try {
-                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                        // proceed in Async Http connection mode
-                        new Thread(parser).start();
-                    } else {
-                        // proceed in Sync Http connection mode
-                        parser.run();
-                    }
-                } catch (Exception e) {
-                    LOG.e(e.getMessage());
-                }
-            }
-        } else {
-            Runnable parser = new Runnable() {
-                @Override
-                public void run() {
+				try {
+					if (!getUseSynchronousMode() && !getUsePoolThread()) {
+						// proceed in Async Http connection mode
+						new Thread(parser).start();
+					} else {
+						// proceed in Sync Http connection mode
+						parser.run();
+					}
+				} catch (Exception e) {
+					LOG.e(e.getMessage());
+				}
+			}
+		} else {
+			Runnable parser = new Runnable() {
+				@Override
+				public void run() {
                     try {
+                        final String jsonResponse = getResponseString(response.body().bytes());
                         postRunnable(new Runnable() {
-
                             @Override
                             public void run() {
-								onFailure(response.code(), response.headers(), response.body());
+                                if (jsonResponse == null)
+                                    onFailure(response.code(), response.headers(), "");
+                                else
+                                    onFailure(response.code(), response.headers(), jsonResponse);
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         LOG.e(e.getMessage());
                     }
-                }
-            };
+				}
+			};
 
-            try {
-                if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                    // proceed in Async Http connection mode
-                    new Thread(parser).start();
-                } else {
-                    // proceed in Sync Http connection mode
-                    parser.run();
-                }
-            } catch (Exception e) {
-                LOG.e(e.getMessage());
-            }
-        }
+			try {
+				if (!getUseSynchronousMode() && !getUsePoolThread()) {
+					// proceed in Async Http connection mode
+					new Thread(parser).start();
+				} else {
+					// proceed in Sync Http connection mode
+					parser.run();
+				}
+			} catch (Exception e) {
+				LOG.e(e.getMessage());
+			}
+		}
 
-    }
+	}
 
-    @Override
-    public void onFailure(Call call, IOException io) {
-        Runnable parser = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    postRunnable(new Runnable() {
+	@Override
+	public void onFailure(Call call, IOException io) {
+		Runnable parser = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					postRunnable(new Runnable() {
 
-                        @Override
-                        public void run() {
-                            onFailure(0, new Headers.Builder().build(), null);
-                        }
-                    });
-                } catch (Exception e) {
-                    LOG.e(e.getMessage());
-                }
-            }
-        };
+						@Override
+						public void run() {
+							onFailure(0, new Headers.Builder().build(), "");
+						}
+					});
+				} catch (Exception e) {
+					LOG.e(e.getMessage());
+				}
+			}
+		};
 
+		try {
+			if (!getUseSynchronousMode() && !getUsePoolThread()) {
+				// proceed in Async Http connection mode
+				new Thread(parser).start();
+			} else {
+				// proceed in Sync Http connection mode
+				parser.run();
+			}
+		} catch (Exception e) {
+			LOG.e(e.getMessage());
+		}
+	}
+
+    /**
+     * Attempts to encode response bytes as string of set encoding
+     *
+     * @param stringBytes response bytes
+     * @return String of set encoding or null
+     */
+    private String getResponseString(byte[] stringBytes) {
         try {
-            if (!getUseSynchronousMode() && !getUsePoolThread()) {
-                // proceed in Async Http connection mode
-                new Thread(parser).start();
-            } else {
-                // proceed in Sync Http connection mode
-                parser.run();
+            String charset = "UTF-8";
+            String toReturn = (stringBytes == null) ? null : new String(stringBytes, charset);
+            if (toReturn != null && toReturn.startsWith(UTF8_BOM)) {
+                return toReturn.substring(1);
             }
-        } catch (Exception e) {
-            LOG.e(e.getMessage());
+            return toReturn;
+        } catch (UnsupportedEncodingException e) {
+            LOG.e("Encoding response into string failed" + e.getMessage());
+            return null;
         }
     }
-
 
 }

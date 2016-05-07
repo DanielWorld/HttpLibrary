@@ -59,7 +59,7 @@ public class AsyncHttpConnection {
                 return;
             }
 
-            // 기본 read timeout 20초로 설정
+            // set read timeout to 20 seconds
             if(client == null){
                 client = new OkHttpClient.Builder()
                         .connectTimeout(20000, TimeUnit.MILLISECONDS)
@@ -69,7 +69,7 @@ public class AsyncHttpConnection {
                         .build();
             }
 
-            // Async 모드
+            // Async mode
             if(mListener != null)
                 mListener.setUseSynchronousMode(false);
 
@@ -103,7 +103,7 @@ public class AsyncHttpConnection {
                 return;
             }
 
-            // 기본 read timeout 20초로 설정
+            // Set read timeout to 20 seconds
             if(client == null){
                 client = new OkHttpClient.Builder()
                         .connectTimeout(20000, TimeUnit.MILLISECONDS)
@@ -113,7 +113,7 @@ public class AsyncHttpConnection {
                         .build();
             }
 
-            // Async 모드
+            // Async mode
             if(mListener != null)
                 mListener.setUseSynchronousMode(false);
 

@@ -4,10 +4,26 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
 apply plugin: 'com.android.library'
+
+// http://sunghwanjo94.blogspot.kr/2015/07/jcenter.html
+// https://github.com/novoda/bintray-release
+// $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'danielworld'
+    groupId = 'com.danielworld'
+    artifactId = 'http-connection-library'
+    publishVersion = '1.1.1'
+    desc = 'A wrapper for Okhttp library and it helps connection to server using HTTP / HTTPS easily'
+    website = 'https://github.com/DanielWorld/HttpLibrary'
+    issueTracker = "${website}/issues"
+    repository = "${website}.git"
+}
 
 android {
     compileSdkVersion 23
@@ -17,7 +33,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.5"
+        versionName "1.1.1"
     }
 
     lintOptions {
@@ -35,11 +51,11 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

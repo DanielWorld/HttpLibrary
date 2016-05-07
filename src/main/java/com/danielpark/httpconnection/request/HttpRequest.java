@@ -7,6 +7,7 @@ import com.danielpark.httpconnection.model.NameValue;
 import com.danielpark.httpconnection.type.ContentType;
 import com.danielpark.httpconnection.type.RequestType;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,11 +23,11 @@ public class HttpRequest extends RequestType {
 
     private String URL;
 
-    private ArrayList<NameValue> headers;       // Daniel (2016-04-07 22:52:45): Header
-    private ArrayList<NameValue> parameters;    // Daniel (2016-04-07 22:52:54): URL 뒤 파라미터들
-    private String body;                        // Daniel (2016-04-07 22:53:07): 전송할 body
-    private String contentType;                 // Daniel (2016-04-07 22:53:24): 전송할 body 의 content-type
-    private ArrayList<MultipartFile> files;     // Daniel (2016-04-07 22:53:56): Multi-part request 에 사용되는 File
+    private ArrayList<NameValue> headers;
+    private ArrayList<NameValue> parameters;
+    private String body;
+    private String contentType;
+    private ArrayList<MultipartFile> files;
 
     public enum Method {
         POST, GET, PUT, DELETE
@@ -205,33 +206,28 @@ public class HttpRequest extends RequestType {
     }
 
     /**
-     * Get contentType <br>
-     *     default Content-Type is application/x-www-form-urlencoded
+     * Get contentType
      * @return
      */
     public String getContentType(){
-        if(contentType == null)
-            return ContentType.getApplicationXWwwFormUrlencoded();
         return contentType;
     }
 
-    /**
-     * Add file to send to server
-     *
-     * @param filePath      해당 파일의
-     * @param fileName
-     * @param paramName
-     * @param contentType
-     * @return
-     * @throws FileNotFoundException
-     */
-    public HttpRequest addFile(String filePath, String fileName, String paramName, String contentType) throws FileNotFoundException {
-        if (files == null)
-            files = new ArrayList<>();
+	/**
+	 * Add file to send to server
+	 * @param file
+	 * @param paramName
+	 * @param contentType
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public HttpRequest addFile(File file, String paramName, String contentType) throws FileNotFoundException {
+		if (files == null)
+			files = new ArrayList<>();
 
-        files.add(new MultipartFile(filePath, fileName, paramName, contentType));
-        return this;
-    }
+		files.add(new MultipartFile(file.getAbsolutePath(), file.getName(), paramName, contentType));
+		return this;
+	}
 
     public ArrayList<MultipartFile> getFiles() {
         if (files == null)

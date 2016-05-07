@@ -4,18 +4,18 @@ HTTP connection library which is based on OkHttp 3.2 library
 ## Gradle build
 build.gradle
 <pre>
-allprojects {
+buildscript {
 		repositories {
 			...
-			maven { url "https://jitpack.io" }
+			jcenter()
 		}
 	}
 
 dependencies {
   ...
-  compile 'com.github.DanielWorld:HttpLibrary:1.0.2'
+  compile 'com.danielworld:http-connection-library:1.0.9'
   // If current project is dependent on parent project (Indeed, there is parent project)
-  // You should write maven { url 'https://jitpack.io' } in parent's repositories
+  // You should write jcenter() in parent's repositories
 }
 </pre>
 
@@ -96,14 +96,43 @@ request.setRequestType(RequestType.Type.STRING);  // String request 타입
 
 request.addHeader("header_key", "header_value");  // String request type
 
-//----- Add body if it exists
+AsyncHttpConnection
+  .getInstance(android.content.Context)
+    .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
+</pre>
+
+### DELETE Json request
+<pre>
+HttpRequest request = new HttpRequest();
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
+request.setRequestType(RequestType.Type.STRING);  // String request 타입
+
+request.addHeader("header_key", "header_value");  // String request type
+
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
 jsonObject.addProperty("Id", 11324);
 
 request.setContentType(ContentType.getApplicationJson());   // Content-type 
 request.addBody(jsonObject.toString);                       // add body
-//------
+
+AsyncHttpConnection
+  .getInstance(android.content.Context)
+    .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
+</pre>
+
+### DELETE Query string
+<pre>
+HttpRequest request = new HttpRequest();
+request.setURL("url");                            // Set URL
+request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
+request.setRequestType(RequestType.Type.STRING);  // String request 타입
+
+request.addHeader("header_key", "header_value");  // String request type
+
+request.addParameter("abc", "sfd");
+request.addParameter("23sd", 22344);
 
 AsyncHttpConnection
   .getInstance(android.content.Context)

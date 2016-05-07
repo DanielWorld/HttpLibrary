@@ -52,13 +52,7 @@ public class StringTask extends HttpConnectionTask {
         if (syncType == null)
             return;
 
-        if (syncType == SyncType.Sync) {
-            connectionSync();
-        } else if (syncType == SyncType.Async) {
-            connectionAsync();
-        }
-
-
+        build(syncType);
     }
 
     /**
@@ -121,8 +115,7 @@ public class StringTask extends HttpConnectionTask {
         return detailURL.url();
     }
 
-    // Daniel (2016-04-07 12:04:10): Async 형태로 연결
-    private void connectionAsync() {
+    private void build(final SyncType syncType) {
         Request.Builder requestBuilder = new Request.Builder();
 
         // Parsing Headers
@@ -155,7 +148,8 @@ public class StringTask extends HttpConnectionTask {
                 break;
             case DELETE:
                 // set URL
-                requestBuilder.url(createPostURL());
+//                requestBuilder.url(createPostURL());
+                requestBuilder.url(createGetURL());
                 // set DELETE method
                 requestBuilder.delete(createBody(httpRequest));
                 break;
@@ -163,58 +157,26 @@ public class StringTask extends HttpConnectionTask {
                 break;
         }
 
+        if (syncType == SyncType.Async) {
+            connectionAsync(requestBuilder);
+        } else if (syncType == SyncType.Sync) {
+            connectionSync(requestBuilder);
+        }
+    }
+
+    // Daniel (2016-04-07 12:04:10): Async connection
+    private void connectionAsync(Request.Builder requestBuilder) {
         final Request request = requestBuilder.build();
 
         Call call = client.newCall(request);
         call.enqueue(callback); // Thread-safe execution, No need to create other thread...
     }
 
-    // Daniel (2016-04-07 12:03:34): Sync 형태로 연결
-    private void connectionSync() {
-        Request.Builder requestBuilder = new Request.Builder();
-
-        // Parsing Headers
-        ArrayList<NameValue> headers = httpRequest.getHeaders();
-
-        for (NameValue n : headers) {
-            requestBuilder.header(n.getName(), n.getValue());
-            // if you want to add multiple values with same name then
-            // use "requestBuilder.addheader(name, value);"
-        }
-
-        switch (httpRequest.getMethod()) {
-            case GET:
-                // set URL
-                requestBuilder.url(createGetURL());
-                // set GET method
-                requestBuilder.get();
-                break;
-            case POST:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.post(createBody(httpRequest));
-                break;
-            case PUT:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set POST method
-                requestBuilder.put(createBody(httpRequest));
-                break;
-            case DELETE:
-                // set URL
-                requestBuilder.url(createPostURL());
-                // set DELETE method
-                requestBuilder.delete(createBody(httpRequest));
-                break;
-            default:
-                break;
-        }
-
+    // Daniel (2016-04-07 12:03:34): Sync connection
+    private void connectionSync(Request.Builder requestBuilder) {
         final Request request = requestBuilder.build();
 
         Call call = client.newCall(request);
-//        call.enqueue(callback); // Thread-safe execution, No need to create other thread...
         try {
             Response response = call.execute();
 
@@ -223,7 +185,6 @@ public class StringTask extends HttpConnectionTask {
         } catch (IOException e) {
             LOG.e(e.getMessage());
         }
-
     }
 
     /**
@@ -235,27 +196,33 @@ public class StringTask extends HttpConnectionTask {
         if (request == null)
             return null;
 
-        // application/x-www-form-urlencoded
-        if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {
-            FormBody.Builder builder = new FormBody.Builder();
+        // Content-Type is not NULL
+        if (request.getContentType() != null) {
+            // application/x-www-form-urlencoded
+            if (request.getContentType().equals(ContentType.getApplicationXWwwFormUrlencoded())) {
+                FormBody.Builder builder = new FormBody.Builder();
 
-            for (NameValue nv : request.getParameters()) {
-                builder.add(nv.getName(), nv.getValue());
+                for (NameValue nv : request.getParameters()) {
+                    builder.add(nv.getName(), nv.getValue());
+                }
+                return builder.build();
             }
-            return builder.build();
+            // application/json
+            else if (request.getContentType().equals(ContentType.getApplicationJson())) {
+                return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
+            }
+            // Content-Type isn't NULL
+            else {
+                if (request.getBody() != null && !request.getBody().trim().isEmpty())   // If body exists
+                    return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
+            }
         }
 
-        // Daniel (2016-04-12 14:11:05): body 가 없거나 null 일 경우
+        // Content-Type is NULL
         if (request.getBody() == null || request.getBody().trim().isEmpty())
-            return null;
-
-        // application/json
-        if (request.getContentType().equals(ContentType.getApplicationJson())) {
-            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
-        }
-        // etc
+            return RequestBody.create(null, new byte[0]);
         else {
-            return RequestBody.create(MediaType.parse(request.getContentType()), request.getBody());
+            return RequestBody.create(null, request.getBody());
         }
     }
 }

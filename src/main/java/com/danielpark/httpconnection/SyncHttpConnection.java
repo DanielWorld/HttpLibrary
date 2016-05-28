@@ -31,7 +31,14 @@ public class SyncHttpConnection {
 
     private SyncHttpConnection(){}
 
+	@Deprecated
     public final static synchronized SyncHttpConnection getInstance(Context ctx) {
+        if (sThis == null)
+            sThis = new SyncHttpConnection();
+        return sThis;
+    }
+
+    public final static synchronized SyncHttpConnection getInstance() {
         if (sThis == null)
             sThis = new SyncHttpConnection();
         return sThis;

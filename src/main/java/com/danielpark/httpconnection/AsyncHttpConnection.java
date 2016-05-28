@@ -28,7 +28,14 @@ public class AsyncHttpConnection {
 
     private AsyncHttpConnection(){}
 
+	@Deprecated
     public final static synchronized AsyncHttpConnection getInstance(Context ctx) {
+        if (sThis == null)
+            sThis = new AsyncHttpConnection();
+        return sThis;
+    }
+
+    public final static synchronized AsyncHttpConnection getInstance() {
         if (sThis == null)
             sThis = new AsyncHttpConnection();
         return sThis;

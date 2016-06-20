@@ -24,9 +24,6 @@ import okhttp3.ResponseBody;
  */
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    private static Logger LOG = Logger.getInstance();
-
-
     public void onSuccess(int statusCode, Headers headers, JSONObject response) {
         // Daniel (2016-04-08 15:16:21): convert response body to JSONObject and then return it
     }
@@ -67,11 +64,9 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                                         onSuccess(response.code(), response.headers(), (String) jsonResponse);
                                 }
                             });
-                        } catch (final JSONException ex) {
-                            LOG.e(ex.getMessage());
-                        } catch (IOException e) {
-                            LOG.e(e.getMessage());
-                        }
+                        } catch (Exception e){
+							e.printStackTrace();
+						}
                     }
                 };
 
@@ -84,7 +79,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         parser.run();
                     }
                 } catch (Exception e) {
-                    LOG.e(e.getMessage());
+					e.printStackTrace();
                 }
 
             } else {
@@ -100,9 +95,17 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                                 }
                             });
                         } catch (Exception e) {
-                            LOG.e(e.getMessage());
-                        }
-                    }
+							e.printStackTrace();
+                        } finally {
+							try {
+								// Daniel (2016-06-20 18:30:42): https://square.github.io/okhttp/3.x/okhttp/okhttp3/ResponseBody.html
+								// response.body().bytes() 를 호출한 경우에는 body().close() 처리가 되기 때문에 걱정 X
+								response.close();
+							} catch (Exception e){
+								e.printStackTrace();
+							}
+						}
+					}
                 };
 
                 try {
@@ -114,7 +117,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         parser.run();
                     }
                 } catch (Exception e) {
-                    LOG.e(e.getMessage());
+					e.printStackTrace();
                 }
             }
         } else {
@@ -138,7 +141,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                             }
                         });
                     } catch (Exception e) {
-                        LOG.e(e.getMessage());
+						e.printStackTrace();
                     }
                 }
             };
@@ -152,7 +155,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                     parser.run();
                 }
             } catch (Exception e) {
-                LOG.e(e.getMessage());
+				e.printStackTrace();
             }
         }
 
@@ -172,7 +175,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         }
                     });
                 } catch (Exception e) {
-                    LOG.e(e.getMessage());
+					e.printStackTrace();
                 }
             }
         };
@@ -186,7 +189,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 parser.run();
             }
         } catch (Exception e) {
-            LOG.e(e.getMessage());
+			e.printStackTrace();
         }
     }
 
@@ -239,7 +242,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             }
             return toReturn;
         } catch (UnsupportedEncodingException e) {
-            LOG.e("Encoding response into string failed" + e.getMessage());
+			e.printStackTrace();
             return null;
         }
     }

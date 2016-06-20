@@ -231,8 +231,8 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 										onSuccess(response.code(), response.headers(), jsonResponse);
 								}
 							});
-						} catch (IOException e) {
-							LOG.e(e.getMessage());
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				};
@@ -246,7 +246,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 						parser.run();
 					}
 				} catch (Exception e) {
-					LOG.e(e.getMessage());
+					e.printStackTrace();
 				}
 
 			} else {
@@ -262,7 +262,15 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 								}
 							});
 						} catch (Exception e) {
-							LOG.e(e.getMessage());
+							e.printStackTrace();
+						} finally {
+							try {
+								// Daniel (2016-06-20 18:30:42): https://square.github.io/okhttp/3.x/okhttp/okhttp3/ResponseBody.html
+								// response.body().bytes() 를 호출한 경우에는 body().close() 처리가 되기 때문에 걱정 X
+								response.close();
+							} catch (Exception e){
+								e.printStackTrace();
+							}
 						}
 					}
 				};
@@ -276,7 +284,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 						parser.run();
 					}
 				} catch (Exception e) {
-					LOG.e(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		} else {
@@ -294,8 +302,8 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
                                     onFailure(response.code(), response.headers(), jsonResponse);
                             }
                         });
-                    } catch (IOException e) {
-                        LOG.e(e.getMessage());
+                    } catch (Exception e) {
+						e.printStackTrace();
                     }
 				}
 			};
@@ -309,7 +317,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 					parser.run();
 				}
 			} catch (Exception e) {
-				LOG.e(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 
@@ -329,7 +337,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 						}
 					});
 				} catch (Exception e) {
-					LOG.e(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		};
@@ -343,7 +351,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 				parser.run();
 			}
 		} catch (Exception e) {
-			LOG.e(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -362,7 +370,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
             }
             return toReturn;
         } catch (UnsupportedEncodingException e) {
-            LOG.e("Encoding response into string failed" + e.getMessage());
+			e.printStackTrace();
             return null;
         }
     }

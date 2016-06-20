@@ -266,7 +266,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface, Callb
 						} finally {
 							try {
 								// Daniel (2016-06-20 18:30:42): https://square.github.io/okhttp/3.x/okhttp/okhttp3/ResponseBody.html
-								// response.body().bytes() 를 호출한 경우에는 body().close() 처리가 되기 때문에 걱정 X
+								// After calling response.body().bytes(), it automatically calls body().close()
 								response.close();
 							} catch (Exception e){
 								e.printStackTrace();

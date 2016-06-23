@@ -1,5 +1,5 @@
 # HttpLibrary
-HTTP connection library which is based on OkHttp 3.2 library
+HTTP connection library which is based on OkHttp 3.3.1 library
 
 ## Gradle build
 build.gradle

@@ -71,10 +71,10 @@ public class SyncHttpConnection {
 
             if(client == null){
                 client = new OkHttpClient.Builder()
-                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
-                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+						.connectTimeout(30, TimeUnit.SECONDS)
+						.writeTimeout(30, TimeUnit.SECONDS)
 //                        .retryOnConnectionFailure(false)
-                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+						.readTimeout(30, TimeUnit.SECONDS)
                         .build();
             }
 
@@ -114,10 +114,10 @@ public class SyncHttpConnection {
 
             if(client == null){
                 client = new OkHttpClient.Builder()
-                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
-                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+						.connectTimeout(30, TimeUnit.SECONDS)
+						.writeTimeout(30, TimeUnit.SECONDS)
 //                        .retryOnConnectionFailure(false)
-                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+						.readTimeout(30, TimeUnit.SECONDS)
                         .build();
             }
 

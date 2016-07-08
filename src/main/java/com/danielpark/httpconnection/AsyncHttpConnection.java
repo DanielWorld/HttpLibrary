@@ -66,13 +66,13 @@ public class AsyncHttpConnection {
                 return;
             }
 
-            // set read timeout to 20 seconds
+            // set read timeout to 30 seconds
             if(client == null){
                 client = new OkHttpClient.Builder()
-                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
-                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .writeTimeout(30, TimeUnit.SECONDS)
 //                        .retryOnConnectionFailure(false)
-                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
                         .build();
             }
 
@@ -110,13 +110,13 @@ public class AsyncHttpConnection {
                 return;
             }
 
-            // Set read timeout to 20 seconds
+            // Set read timeout to 30 seconds
             if(client == null){
                 client = new OkHttpClient.Builder()
-                        .connectTimeout(20000, TimeUnit.MILLISECONDS)
-                        .writeTimeout(20000, TimeUnit.MILLISECONDS)
+						.connectTimeout(30, TimeUnit.SECONDS)
+						.writeTimeout(30, TimeUnit.SECONDS)
 //                        .retryOnConnectionFailure(false)
-                        .readTimeout(20000, TimeUnit.MILLISECONDS)
+						.readTimeout(30, TimeUnit.SECONDS)
                         .build();
             }
 

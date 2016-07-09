@@ -8,17 +8,9 @@ import com.danielpark.httpconnection.util.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 /**
  * Copyright (c) 2014-2015 daniel@bapul.net
@@ -31,23 +23,18 @@ public class StringTask extends HttpConnectionTask {
     private OkHttpClient client;
     private HttpRequest httpRequest;
     private Callback callback;
-    private Interceptor interceptor;
 
-    StringTask(OkHttpClient client, HttpRequest httpRequest, Callback callback, Interceptor interceptor) {
+    StringTask(OkHttpClient client, HttpRequest httpRequest, Callback callback) {
         super(client);
 
         this.client = client;
         this.httpRequest = httpRequest;
         this.callback = callback;
-        this.interceptor = interceptor;
     }
 
     @Override
     public void run(SyncType syncType) {
         super.run(syncType);
-
-        if (interceptor != null)
-            client.interceptors().add(interceptor);
 
         if (syncType == null)
             return;
@@ -133,6 +120,14 @@ public class StringTask extends HttpConnectionTask {
                 requestBuilder.url(createGetURL());
                 // set GET method
                 requestBuilder.get();
+
+				// Daniel (2016-07-08 17:25:14): Check Cache mode
+				if (httpRequest.isCacheResponse()) {
+					requestBuilder.cacheControl(new CacheControl.Builder().maxAge(httpRequest.getCacheRenewalTime(), TimeUnit.SECONDS).maxStale(httpRequest.getCacheExpireTime(), TimeUnit.SECONDS).build());
+				} else {
+					requestBuilder.cacheControl(new CacheControl.Builder().noCache().build());
+				}
+
                 break;
             case POST:
                 // set URL

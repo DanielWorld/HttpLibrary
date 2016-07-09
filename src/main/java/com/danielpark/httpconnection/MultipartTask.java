@@ -36,23 +36,18 @@ class MultipartTask extends HttpConnectionTask {
     private OkHttpClient client;
     private HttpRequest httpRequest;
     private Callback callback;
-    private Interceptor interceptor;
 
-    MultipartTask(OkHttpClient client, HttpRequest httpRequest, Callback callback, Interceptor interceptor) {
+    MultipartTask(OkHttpClient client, HttpRequest httpRequest, Callback callback) {
         super(client);
 
         this.client = client;
         this.httpRequest = httpRequest;
         this.callback = callback;
-        this.interceptor = interceptor;
     }
 
     @Override
     public void run(SyncType syncType) {
         super.run(syncType);
-
-        if (interceptor != null)
-            client.interceptors().add(interceptor);
 
         if(syncType == null)
             return;

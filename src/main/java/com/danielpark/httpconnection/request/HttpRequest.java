@@ -12,8 +12,7 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import okhttp3.MediaType;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright (c) 2014-2015 op7773hons@gmail.com
@@ -28,6 +27,12 @@ public class HttpRequest extends RequestType {
     private String body;
     private String contentType;
     private ArrayList<MultipartFile> files;
+
+	// Daniel (2016-07-08 16:56:57): cache config
+	private boolean isResponseCached = false;
+	// Time unit is second
+	private int cacheRenewalTime = 60;	// cache age
+	private int cacheExpireTime = 0;	// when connectivity is available, use cache instead until request cache is expired.
 
     public enum Method {
         POST, GET, PUT, DELETE
@@ -244,4 +249,57 @@ public class HttpRequest extends RequestType {
     public RequestType.Type getRequestType() {
         return super.getRequestType();
     }
+
+	//--------------- This is for response cache -------------------- //
+	/**
+	 * Response is cached for this call only and HTTP GET method only supports
+	 * @param result
+	 */
+	public void setCacheResponse(boolean result) {
+		this.isResponseCached = result;
+	}
+
+	/**
+	 * Get if this call caches response
+	 * @return
+	 */
+	public boolean isCacheResponse(){
+		return isResponseCached;
+	}
+
+	/**
+	 * It only works when Network connectivity is available. set cache init date. <br>
+	 *     How long cache should be remain until cache is updated
+	 * @param maxAge
+	 * @param timeUnit
+	 */
+	public void setCacheRenewalTime(int maxAge, TimeUnit timeUnit) {
+		if (maxAge < 0) throw new IllegalArgumentException("maxAge < 0: " + maxAge);
+		long maxAgeSecondsLong = timeUnit.toSeconds(maxAge);
+		this.cacheRenewalTime = maxAgeSecondsLong > Integer.MAX_VALUE
+				? Integer.MAX_VALUE
+				: (int) maxAgeSecondsLong;
+	}
+
+	/**
+	 * It only works when Network connectivity is available. set cache expire date. <br>
+	 *     How long cache is used instead of network response
+	 * @param maxStale
+	 * @param timeUnit
+	 */
+	public void setCacheExpireTime(int maxStale, TimeUnit timeUnit) {
+		if (maxStale < 0) throw new IllegalArgumentException("maxStale < 0: " + maxStale);
+		long maxStaleSecondsLong = timeUnit.toSeconds(maxStale);
+		this.cacheExpireTime = maxStaleSecondsLong > Integer.MAX_VALUE
+				? Integer.MAX_VALUE
+				: (int) maxStaleSecondsLong;
+	}
+
+	public int getCacheRenewalTime() {
+		return cacheRenewalTime;
+	}
+
+	public int getCacheExpireTime() {
+		return cacheExpireTime;
+	}
 }

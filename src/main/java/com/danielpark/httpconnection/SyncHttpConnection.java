@@ -23,24 +23,24 @@ import okhttp3.*;
  */
 public class SyncHttpConnection {
 
-    private Logger LOG = Logger.getInstance();
+	private Logger LOG = Logger.getInstance();
 
-    private static SyncHttpConnection sThis;
+	private static SyncHttpConnection sThis;
 
-    private SyncHttpConnection(){}
+	private SyncHttpConnection(){}
 
 	@Deprecated
-    public final static synchronized SyncHttpConnection getInstance(Context ctx) {
-        if (sThis == null)
-            sThis = new SyncHttpConnection();
-        return sThis;
-    }
+	public final static synchronized SyncHttpConnection getInstance(Context ctx) {
+		if (sThis == null)
+			sThis = new SyncHttpConnection();
+		return sThis;
+	}
 
-    public final static synchronized SyncHttpConnection getInstance() {
-        if (sThis == null)
-            sThis = new SyncHttpConnection();
-        return sThis;
-    }
+	public final static synchronized SyncHttpConnection getInstance() {
+		if (sThis == null)
+			sThis = new SyncHttpConnection();
+		return sThis;
+	}
 
 	private OkHttpClient client;
 
@@ -133,11 +133,12 @@ public class SyncHttpConnection {
 	}
 
 	/**
-	 * Start Async HTTP connection with {@link JsonHttpResponseHandler} for Response Cache
+	 * Start Sync HTTP connection with {@link JsonHttpResponseHandler}
+	 *
 	 * @param request
-	 * @param mListener
+	 * @throws Exception
 	 */
-	public void start(final Context context, final HttpRequest request, JsonHttpResponseHandler mListener){
+	public void start(final Context context, HttpRequest request, JsonHttpResponseHandler mListener){
 
 		// Make sure that everything is perfect!
 		synchronized (this) {
@@ -147,12 +148,11 @@ public class SyncHttpConnection {
 			}
 
 			// No need to check thread, because okhttp call method already run in another Thread!!
-			if (Looper.myLooper() != Looper.getMainLooper()) {
-				LOG.e("Do execute this on main thread!!");
+			if (Looper.myLooper() == Looper.getMainLooper()) {
+				LOG.e("Do not execute this on main thread!!");
 				return;
 			}
 
-			// set read timeout to 30 seconds
 			if(client == null){
 				client = new OkHttpClient.Builder()
 						.connectTimeout(30, TimeUnit.SECONDS)
@@ -202,9 +202,9 @@ public class SyncHttpConnection {
 				e.printStackTrace();
 			}
 
-			// Async mode
+			// Sync mode
 			if(mListener != null)
-				mListener.setUseSynchronousMode(false);
+				mListener.setUseSynchronousMode(true);
 
 			if (request.getRequestType() == RequestType.Type.MULTI_PART) {
 				currentTask = new MultipartTask(client, request, mListener);
@@ -216,11 +216,12 @@ public class SyncHttpConnection {
 	}
 
 	/**
-	 * Start Async HTTP connection with {@link AsyncHttpResponseHandler}
+	 * Start Sync HTTP connection with {@link AsyncHttpResponseHandler}
+	 *
 	 * @param request
-	 * @param mListener
+	 * @throws Exception
 	 */
-	public void start(final Context context, final HttpRequest request, AsyncHttpResponseHandler mListener){
+	public void start(final Context context, HttpRequest request, AsyncHttpResponseHandler mListener){
 
 		// Make sure that everything is perfect!
 		synchronized (this) {
@@ -230,12 +231,11 @@ public class SyncHttpConnection {
 			}
 
 			// No need to check thread, because okhttp call method already run in another Thread!!
-			if (Looper.myLooper() != Looper.getMainLooper()) {
-				LOG.e("Do execute this on main thread!!");
+			if (Looper.myLooper() == Looper.getMainLooper()) {
+				LOG.e("Do not execute this on main thread!!");
 				return;
 			}
 
-			// set read timeout to 30 seconds
 			if(client == null){
 				client = new OkHttpClient.Builder()
 						.connectTimeout(30, TimeUnit.SECONDS)
@@ -285,9 +285,9 @@ public class SyncHttpConnection {
 				e.printStackTrace();
 			}
 
-			// Async mode
+			// Sync mode
 			if(mListener != null)
-				mListener.setUseSynchronousMode(false);
+				mListener.setUseSynchronousMode(true);
 
 			if (request.getRequestType() == RequestType.Type.MULTI_PART) {
 				currentTask = new MultipartTask(client, request, mListener);

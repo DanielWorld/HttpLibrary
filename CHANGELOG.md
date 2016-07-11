@@ -1,3 +1,9 @@
+# 1.1.5
+2016-07-09
+
+- change timeout 20 to 30 seconds
+- add response() cache mode
+
 # 1.1.3
 2016-06-23
 

@@ -120,14 +120,6 @@ public class StringTask extends HttpConnectionTask {
                 requestBuilder.url(createGetURL());
                 // set GET method
                 requestBuilder.get();
-
-				// Daniel (2016-07-08 17:25:14): Check Cache mode
-				if (httpRequest.isCacheResponse()) {
-					requestBuilder.cacheControl(new CacheControl.Builder().maxAge(httpRequest.getCacheRenewalTime(), TimeUnit.SECONDS).maxStale(httpRequest.getCacheExpireTime(), TimeUnit.SECONDS).build());
-				} else {
-					requestBuilder.cacheControl(new CacheControl.Builder().noCache().build());
-				}
-
                 break;
             case POST:
                 // set URL

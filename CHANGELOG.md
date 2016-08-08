@@ -1,3 +1,11 @@
+# 1.1.6
+2016-08-08
+
+- Enable interceptor callback
+- Removed http response cache mode (unstable)
+- Change target / compile sdk to 24
+- okhttp 3.4.1 / okio 1.9.0 updated
+
 # 1.1.5
 2016-07-09
 

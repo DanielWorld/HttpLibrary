@@ -149,7 +149,7 @@ public class HttpRequest extends RequestType {
     }
 
     /**
-     * Remove certain header by Header name & Header value
+     * Remove certain header by Header name and Header value
      * @param headerName
      * @param headerValue
      */

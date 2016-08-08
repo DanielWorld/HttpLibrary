@@ -58,7 +58,6 @@ public class SyncHttpConnection {
 	 * Start Sync HTTP connection with {@link JsonHttpResponseHandler}
 	 *
 	 * @param request
-	 * @throws Exception
 	 */
 	public void start(HttpRequest request, JsonHttpResponseHandler mListener, Interceptor interceptor){
 
@@ -114,7 +113,6 @@ public class SyncHttpConnection {
 	 * Start Sync HTTP connection with {@link AsyncHttpResponseHandler}
 	 *
 	 * @param request
-	 * @throws Exception
 	 */
 	public void start(HttpRequest request, AsyncHttpResponseHandler mListener, Interceptor interceptor){
 

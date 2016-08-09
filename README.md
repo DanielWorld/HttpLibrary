@@ -1,5 +1,5 @@
 # HttpLibrary
-HTTP connection library which is based on OkHttp 3.3.1 library
+HTTP connection library which is based on OkHttp 3.4.1 library
 
 ## Gradle build
 build.gradle
@@ -13,7 +13,7 @@ buildscript {
 
 dependencies {
   ...
-  compile 'com.danielworld:http-connection-library:1.1.3'
+  compile 'com.danielworld:http-connection-library:1.1.6'
   // If current project is dependent on parent project (Indeed, there is parent project)
   // You should write jcenter() in parent's repositories
 }
@@ -34,7 +34,7 @@ request.addParameter("Id", 134);
 
 // Start Async Http connection 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 
 </pre>
@@ -43,7 +43,7 @@ AsyncHttpConnection
 <pre>
 ...
 SyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -64,7 +64,7 @@ request.setContentType(ContentType.getApplicationJson());   // Content-type (req
 request.addBody(jsonObject.toString);                       // add body	(required)
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -83,7 +83,7 @@ request.addParameter("Id", 22242);
 request.setContentType(ContentType.getApplicationXWwwFormUrlencoded());   // Content-type (required)
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -97,7 +97,7 @@ request.setRequestType(RequestType.Type.STRING);  // String request 타입
 request.addHeader("header_key", "header_value");  // String request type
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -118,7 +118,7 @@ request.setContentType(ContentType.getApplicationJson());   // Content-type
 request.addBody(jsonObject.toString);                       // add body
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -135,7 +135,7 @@ request.addParameter("abc", "sfd");
 request.addParameter("23sd", 22344);
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -156,7 +156,7 @@ request.setContentType(ContentType.getApplicationJson());   // Content-type
 request.addBody(jsonObject.toString);                       // add body
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
@@ -178,14 +178,14 @@ request.addParameter("Locale", "enUS");
 request.addParameter("Id", 134);
 
 AsyncHttpConnection
-  .getInstance(android.content.Context)
+  .getInstance()
     .start(request, new JsonHttpResponseHandler(), new okhttp3.Intercepter);
 </pre>
 
 ### JsonHttpResponseHandler
 <pre>
 public void onSuccess(int statusCode, Headers headers, JSONObject response) {
-	// JSONObject response (there should be contents)
+	    // JSONObject response (there should be contents)
 }
 
 public void onSuccess(int statusCode, Headers headers, JSONArray response) {
@@ -193,21 +193,21 @@ public void onSuccess(int statusCode, Headers headers, JSONArray response) {
 }
 
 public void onSuccess(int statusCode, Headers headers, String response) {
-       // String response (it could be empty)
+        // String response (it could be empty)
 }
 
-public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
-	// Failure response
+public void onFailure(int statusCode, Headers headers, String response) {
+        // Failure response
 }
 </pre>
 
 ### AsyncHttpResponseHandler
 <pre>
-public void onSuccess(int statusCode, Headers headers, ResponseBody responseBody) {
-       
+public void onSuccess(int statusCode, Headers headers, String response) {
+        
 }
 
-public void onFailure(int statusCode, Headers headers, ResponseBody responseBody){
-	
+public void onFailure(int statusCode, Headers headers, String response) {
+       
 }
 </pre>

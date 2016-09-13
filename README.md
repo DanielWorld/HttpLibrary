@@ -92,9 +92,9 @@ AsyncHttpConnection
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // Set URL
 request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // String request type
+request.addHeader("header_key", "header_value");  // add header
 
 AsyncHttpConnection
   .getInstance()
@@ -106,9 +106,9 @@ AsyncHttpConnection
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // Set URL
 request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // String request type
+request.addHeader("header_key", "header_value");  // add header
 
 JsonObject jsonObject = new JsonObject();
 jsonObject.addProperty("Text", "example1");
@@ -127,9 +127,9 @@ AsyncHttpConnection
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // Set URL
 request.setMethod(HttpRequest.Method.DELETE);        // Http DELETE method
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
-request.addHeader("header_key", "header_value");  // String request type
+request.addHeader("header_key", "header_value");  // add header
 
 request.addParameter("abc", "sfd");
 request.addParameter("23sd", 22344);
@@ -144,7 +144,7 @@ AsyncHttpConnection
 HttpRequest request = new HttpRequest();
 request.setURL("url");                            // Set URL
 request.setMethod(HttpRequest.Method.PUT);        // Http PUT method
-request.setRequestType(RequestType.Type.STRING);  // String request 타입
+request.setRequestType(RequestType.Type.STRING);  // String request type
 
 request.addHeader("header_key", "header_value");  // add Header
 

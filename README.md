@@ -211,3 +211,37 @@ public void onFailure(int statusCode, Headers headers, String response) {
        
 }
 </pre>
+
+### Add Logger (To track Http/Https traffics)
+build.gradle
+<pre>
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    // Daniel (2016-11-04 11:14:02): Okhttp3 logging interceptor
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+}
+</pre>
+example
+<pre>
+public class ExampleApplication extends android.app.Application {
+	public void onCreate() {
+		/**
+			Once you added logger, no need to add logger again when you call other http/https calls <br>
+			But make sure not to add other interceptor in different http/https calls
+		*/
+		HttpRequest request = new HttpRequest();
+		try {
+			request.setURL(BapulCubeUrl.ME.toString());
+			request.setMethod(HttpRequest.Method.GET);
+			request.setRequestType(RequestType.Type.STRING);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+		logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+		AsyncHttpConnection.getInstance()
+				.start(request, new JsonHttpResponseHandler(), logging);
+	}
+}
+</pre>

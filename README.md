@@ -1,5 +1,5 @@
 # HttpLibrary
-HTTP connection library which is based on OkHttp 3.4.1 library
+HTTP connection library which is based on OkHttp 3.4.2 library
 
 ## Gradle build
 build.gradle
@@ -13,7 +13,7 @@ buildscript {
 
 dependencies {
   ...
-  compile 'com.danielworld:http-connection-library:1.1.6'
+  compile 'com.danielworld:http-connection-library:1.1.7'
   // If current project is dependent on parent project (Indeed, there is parent project)
   // You should write jcenter() in parent's repositories
 }

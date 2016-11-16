@@ -1,6 +1,9 @@
 # HttpLibrary
 HTTP connection library which is based on OkHttp 3.4.2 library
 
+- This library uses OkHttp as main core, to provide unified interface for using Okhttp's capabilities
+- Support Response data as JSONObject, JSONArray, or String. (You don't need to parse response data by your self!)
+
 ## Gradle build
 build.gradle
 <pre>

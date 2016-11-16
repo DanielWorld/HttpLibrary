@@ -65,7 +65,8 @@ public class StringTask extends HttpConnectionTask {
         HttpUrl.Builder builder = detailURL.newBuilder();
 
         for (NameValue n : parameters) {
-            builder.setQueryParameter(n.getName(), n.getValue());
+//            builder.setQueryParameter(n.getName(), n.getValue());
+            builder.addQueryParameter(n.getName(), n.getValue());
         }
 
         detailURL = builder.build();

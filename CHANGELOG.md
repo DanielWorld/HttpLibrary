@@ -1,3 +1,10 @@
+# 1.1.7
+2016-11-16
+
+- Allow duplicate key parameter in HTTP GET (StringTask.class)
+- okhttp 3.4.2 updated (https://github.com/square/okhttp/blob/master/CHANGELOG.md)
+- okio 1.11.0 updated (https://github.com/square/okio/blob/master/CHANGELOG.md)
+
 # 1.1.6
 2016-08-08
 

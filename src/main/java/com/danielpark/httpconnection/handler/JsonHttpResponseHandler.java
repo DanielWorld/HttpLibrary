@@ -73,7 +73,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 };
 
                 try {
-                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                    if (!getUseSynchronousMode()) {
                         // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
@@ -111,7 +111,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 };
 
                 try {
-                    if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                    if (!getUseSynchronousMode()) {
                         // proceed in Async Http connection mode
                         new Thread(parser).start();
                     } else {
@@ -149,7 +149,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             };
 
             try {
-                if (!getUseSynchronousMode() && !getUsePoolThread()) {
+                if (!getUseSynchronousMode()) {
                     // proceed in Async Http connection mode
                     new Thread(parser).start();
                 } else {
@@ -183,7 +183,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         };
 
         try {
-            if (!getUseSynchronousMode() && !getUsePoolThread()) {
+            if (!getUseSynchronousMode()) {
                 // proceed in Async Http connection mode
                 new Thread(parser).start();
             } else {

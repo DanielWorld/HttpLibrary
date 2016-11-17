@@ -1,6 +1,8 @@
 package com.danielpark.httpconnection.handler;
 
 import com.danielpark.httpconnection.network.HttpStatus;
+import com.danielpark.httpconnection.util.CustomJsonTokenizer;
+import com.danielpark.httpconnection.util.JsonObject;
 import com.danielpark.httpconnection.util.Logger;
 
 import org.json.JSONArray;
@@ -56,7 +58,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                                 public void run() {
                                     if (jsonResponse == null)
                                         onSuccess(response.code(), response.headers(), "");
-                                    else if (jsonResponse instanceof JSONObject)
+                                    else if (jsonResponse instanceof JsonObject)
                                         onSuccess(response.code(), response.headers(), (JSONObject) jsonResponse);
                                     else if (jsonResponse instanceof JSONArray)
                                         onSuccess(response.code(), response.headers(), (JSONArray) jsonResponse);
@@ -132,7 +134,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                             public void run() {
                                 if (jsonResponse == null)
                                     onFailure(response.code(), response.headers(), "");
-                                else if (jsonResponse instanceof JSONObject)
+                                else if (jsonResponse instanceof JsonObject)
                                     onFailure(response.code(), response.headers(), jsonResponse.toString());
                                 else if (jsonResponse instanceof JSONArray)
                                     onFailure(response.code(), response.headers(), jsonResponse.toString());
@@ -213,7 +215,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             // If not we consider this as a string
             if ((jsonString.startsWith("{") && jsonString.endsWith("}"))
                     || jsonString.startsWith("[") && jsonString.endsWith("]")) {
-                result = new JSONTokener(jsonString).nextValue();
+//                result = new JSONTokener(jsonString).nextValue();
+                result = new CustomJsonTokenizer(jsonString).nextValue();
             }
             // Check if this is a String "my String value" and remove quote
             // Other value type (numerical, boolean) should be without quote

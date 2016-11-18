@@ -18,7 +18,7 @@ publish {
     userOrg = 'danielworld'
     groupId = 'com.danielworld'
     artifactId = 'http-connection-library'
-    publishVersion = '1.1.8'
+    publishVersion = '1.1.9'
     desc = 'A wrapper for Okhttp library and it helps connection to server using HTTP / HTTPS easily'
     website = 'https://github.com/DanielWorld/HttpLibrary'
     issueTracker = "${website}/issues"
@@ -33,7 +33,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 24
         versionCode 1
-        versionName "1.1.8"
+        versionName "1.1.9"
     }
 
     lintOptions {

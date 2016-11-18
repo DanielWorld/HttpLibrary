@@ -16,7 +16,7 @@ buildscript {
 
 dependencies {
   ...
-  compile 'com.danielworld:http-connection-library:1.1.7'
+  compile 'com.danielworld:http-connection-library:1.1.9'
   // If current project is dependent on parent project (Indeed, there is parent project)
   // You should write jcenter() in parent's repositories
 }

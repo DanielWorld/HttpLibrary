@@ -1,3 +1,8 @@
+# 1.1.9
+2016-11-18
+
+- Add JsonObject field naming policy option
+
 # 1.1.7
 2016-11-16
 

@@ -203,7 +203,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      * @return Object parsedResponse
      * @throws org.json.JSONException exception if thrown while parsing JSON
      */
-    private Object parseResponse(byte[] responseBody) throws JSONException {
+    protected Object parseResponse(byte[] responseBody) throws JSONException {
         if (responseBody == null)
             return null;
         Object result = null;
@@ -237,7 +237,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      * @param stringBytes response bytes
      * @return String of set encoding or null
      */
-    private String getResponseString(byte[] stringBytes, String charset) {
+    protected String getResponseString(byte[] stringBytes, String charset) {
         try {
             String toReturn = (stringBytes == null) ? null : new String(stringBytes, charset);
             if (toReturn != null && toReturn.startsWith(UTF8_BOM)) {

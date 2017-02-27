@@ -3,6 +3,7 @@ package com.danielpark.httpconnection;
 import android.os.Looper;
 
 import com.danielpark.httpconnection.handler.AsyncHttpResponseHandler;
+import com.danielpark.httpconnection.handler.PureJsonHttpResponseHandler;
 import com.danielpark.httpconnection.handler.JsonHttpResponseHandler;
 import com.danielpark.httpconnection.request.HttpRequest;
 import com.danielpark.httpconnection.type.RequestType;
@@ -37,7 +38,7 @@ public class SyncHttpConnection {
 	HttpConnectionTask currentTask;
 
 	/**
-	 * Start Async HTTP connection with {@link JsonHttpResponseHandler}
+	 * Start Sync HTTP connection with {@link JsonHttpResponseHandler}
 	 * @param request
 	 * @param mListener
 	 */
@@ -46,11 +47,20 @@ public class SyncHttpConnection {
 	}
 
 	/**
-	 * Start Async HTTP connection with {@link AsyncHttpResponseHandler}
+	 * Start Sync HTTP connection with {@link AsyncHttpResponseHandler}
 	 * @param request
 	 * @param mListener
 	 */
 	public void start(HttpRequest request, AsyncHttpResponseHandler mListener){
+		start(request, mListener, null);
+	}
+
+	/**
+	 * Start Sync HTTP connection with {@link PureJsonHttpResponseHandler}
+	 * @param request
+	 * @param mListener
+     */
+	public void start(HttpRequest request, PureJsonHttpResponseHandler mListener) {
 		start(request, mListener, null);
 	}
 
@@ -116,6 +126,61 @@ public class SyncHttpConnection {
 	 */
 	public void start(HttpRequest request, AsyncHttpResponseHandler mListener, Interceptor interceptor){
 
+		// Make sure that everything is perfect!
+		synchronized (this) {
+			if (request == null) {
+				LOG.e("HttpRequest parameter is null!");
+				return;
+			}
+
+			// No need to check thread, because okhttp call method already run in another Thread!!
+			if (Looper.myLooper() == Looper.getMainLooper()) {
+				LOG.e("Do not execute this on main thread!!");
+				return;
+			}
+
+			if(client == null){
+				client = new OkHttpClient.Builder()
+						.connectTimeout(30, TimeUnit.SECONDS)
+						.writeTimeout(30, TimeUnit.SECONDS)
+						.readTimeout(30, TimeUnit.SECONDS)
+						.build();
+			}
+
+			// Daniel (2016-07-08 12:04:51): if interceptor exists!
+			try {
+				if (interceptor != null) {
+					client = client.newBuilder()
+							.connectTimeout(30, TimeUnit.SECONDS)
+							.writeTimeout(30, TimeUnit.SECONDS)
+							.readTimeout(30, TimeUnit.SECONDS)
+							.addInterceptor(interceptor)
+							.build();
+				}
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+
+			// Sync mode
+			if(mListener != null)
+				mListener.setUseSynchronousMode(true);
+
+			if (request.getRequestType() == RequestType.Type.MULTI_PART) {
+				currentTask = new MultipartTask(client, request, mListener);
+			} else if (request.getRequestType() == RequestType.Type.STRING) {
+				currentTask = new StringTask(client, request, mListener);
+			}
+		}
+		currentTask.run(HttpConnectionTask.SyncType.Sync);
+	}
+
+	/**
+	 * Start Sync HTTP connection with {@link PureJsonHttpResponseHandler}
+	 * @param request
+	 * @param mListener
+	 * @param interceptor
+     */
+	public void start(HttpRequest request, PureJsonHttpResponseHandler mListener, Interceptor interceptor) {
 		// Make sure that everything is perfect!
 		synchronized (this) {
 			if (request == null) {
